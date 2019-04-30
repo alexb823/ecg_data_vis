@@ -7,22 +7,27 @@ const app = express();
 
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
+
+// Static middleware
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 
+// Proxy server router
+// Requests starting with /wxapp2/ecgdata/liveecg will proxy to https://paf3.ecordum.cn
 app.use('/wxapp2/ecgdata/liveecg', ecgData);
 
+// For all GET requests that are not to the proxy, will send index.html
 app.get('/*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '..', 'src/index.html' ))
 });
 
-//handle 404s
+// Handle 404s
 app.use((req, res, next) => {
   const err = new Error('Not Found!');
   err.status = 404;
   next(err)
 })
 
-//Error handling endware
+// Error handling endware
 app.use((err, req, res, next) =>{
   res.status(err.status || 500);
   res.send(err.message || 'Internet server error!')
