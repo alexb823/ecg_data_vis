@@ -4,6 +4,7 @@ import {
   VictoryLine,
   VictoryChart,
   VictoryZoomContainer,
+  VictoryTheme,
   VictoryBrushContainer,
   VictoryAxis,
 } from 'victory';
@@ -12,75 +13,114 @@ import { parseSmoothECG } from './utils';
 const App = () => {
   const baseUrl = '/wxapp2/ecgdata/liveecg/5C0347004129';
   let time = Date.parse('Thu, 16 May 2019 06:57:18 GMT');
-  let timeStamp = Date.parse('Thu, 16 May 2019 06:57:18 GMT');
+  //State
   const [ecgData, setEcgData] = useState([]);
-  const [zoomDomain, setZoomDomain] = useState({ x: [time, time + 6000] });
-  // const [selectDomain, setSelectDomain] = useState({ x: [time, time + 6000] });
+  const [zoomXDomain, setZoomXDomain] = useState([time, time + 6000]);
+  const [entireDomain, setEntireDomain] = useState({});
 
+  // only keeping track of the X dimension
   const handleZoom = domain => {
-    setZoomDomain(domain);
+    setZoomXDomain(domain.x);
   };
 
-  const handleBrush = domain => {
-    setSelectDomain(domain);
+  // Using zoomXDomain state to filter out all data that isn't currently visible
+  const getData = () => {
+    return ecgData.filter(d => d.x >= zoomXDomain[0] && d.x <= zoomXDomain[1]);
+  };
+
+  // Because we are dynamically changing the data prop on VictoryChart,
+  // we must also explicitly set its entire domain
+  const getEntireDomain = ecgData => {
+    const firstXVal = ecgData[0].x;
+    const lastXVal = ecgData[ecgData.length - 1].x;
+    return { x: [firstXVal, lastXVal], y: [-3000, 4000] };
   };
 
   useEffect(() => {
+    let timeStamp = Date.parse('Thu, 16 May 2019 06:57:18 GMT');
     axios
-    .get(`${baseUrl}/20190516/20190516_145335_5C0347004129_smoothECG.txt`)
-    .then(response => parseSmoothECG(response.data))
-    .then(ecg =>
-      ecg.map(sample => {
-        const dataPoint = { x: timeStamp, y: sample, flat: 0 };
-        timeStamp += 4;
-        return dataPoint;
-      })
-    )
-    .then(dataPoints => setEcgData(dataPoints))
-  }, [])
+      .get(`${baseUrl}/20190516/20190516_145335_5C0347004129_smoothECG.txt`)
+      .then(response => parseSmoothECG(response.data))
+      .then(ecg =>
+        ecg.map(sample => {
+          const dataPoint = { x: timeStamp, y: sample, flat: 0 };
+          timeStamp += 4;
+          return dataPoint;
+        })
+      )
+      .then(ecgData => {
+        setEcgData(ecgData);
+        setEntireDomain(getEntireDomain(ecgData));
+      });
+  }, []);
 
   return (
     <div>
       <VictoryChart
-        width={600}
-        height={470}
+        theme={VictoryTheme.material}
+        domain={entireDomain}
+        width={700}
+        height={350}
         scale={{ x: 'time' }}
         containerComponent={
           <VictoryZoomContainer
-            responsive={true}
+            responsive={false}
             allowZoom={false}
             zoomDimension="x"
-            zoomDomain={zoomDomain}
+            zoomDomain={{ x: zoomXDomain }}
             onZoomDomainChange={handleZoom}
           />
         }
       >
-        <VictoryLine style={{ data: { stroke: 'tomato' } }} data={ecgData} />
+        <VictoryAxis
+          offsetY={50}
+          // tickFormat={time =>
+          //   `${time.getUTCHours()}:${time.getUTCMinutes()}:${time.getUTCSeconds()}`
+          // }
+        />
+        <VictoryAxis
+          dependentAxis
+          offsetX={50}
+          crossAxis={false}
+          tickFormat={mv => `${mv / 1000}mV`}
+          style={{
+            grid: { stroke: 'none' },
+          }}
+        />
+
+        <VictoryLine
+          style={{ data: { stroke: 'tomato', strokeWidth: '2px' } }}
+          interpolation="natural"
+          data={getData()}
+
+        />
       </VictoryChart>
 
-      {/* <VictoryChart
+      <VictoryChart
+        theme={VictoryTheme.material}
+        domain={entireDomain}
         padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
-        width={600}
-        height={100}
+        width={700}
+        height={80}
         scale={{ x: 'time' }}
         containerComponent={
           <VictoryBrushContainer
             responsive={false}
             brushDimension="x"
-            brushDomain={zoomDomain}
+            brushDomain={{ x: zoomXDomain }}
             onBrushDomainChange={handleZoom}
           />
         }
       >
-        tickFormat={x => new Date(x).getUTCMilliseconds()}
-        <VictoryAxis  />
+        <VictoryAxis offsetY={30} />
         <VictoryLine
-          style={{data: { stroke: 'tomato' }}}
-          data={ecgData}
-          x='x'
-          y='flat'
+          style={{
+            data: { stroke: 'tomato', strokeWidth: '1px' },
+          }}
+          interpolation="bundle"
+          data={getData()}
         />
-      </VictoryChart> */}
+      </VictoryChart>
     </div>
   );
 };
