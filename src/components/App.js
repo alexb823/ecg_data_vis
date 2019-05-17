@@ -15,14 +15,14 @@ const App = () => {
   let timeStamp = Date.parse('Thu, 16 May 2019 06:57:18 GMT');
   const [ecgData, setEcgData] = useState([]);
   const [zoomDomain, setZoomDomain] = useState({ x: [time, time + 6000] });
-  const [selectDomain, setSelectDomain] = useState({ x: [time, time + 6000] });
+  // const [selectDomain, setSelectDomain] = useState({ x: [time, time + 6000] });
 
   const handleZoom = domain => {
-    setSelectDomain(domain);
+    setZoomDomain(domain);
   };
 
   const handleBrush = domain => {
-    setZoomDomain(domain);
+    setSelectDomain(domain);
   };
 
   useEffect(() => {
@@ -31,13 +31,12 @@ const App = () => {
     .then(response => parseSmoothECG(response.data))
     .then(ecg =>
       ecg.map(sample => {
-        const dataPoint = { x: timeStamp, y: sample };
+        const dataPoint = { x: timeStamp, y: sample, flat: 0 };
         timeStamp += 4;
         return dataPoint;
       })
     )
     .then(dataPoints => setEcgData(dataPoints))
-    .then(() => console.log(ecgData));
   }, [])
 
   return (
@@ -48,7 +47,8 @@ const App = () => {
         scale={{ x: 'time' }}
         containerComponent={
           <VictoryZoomContainer
-            responsive={false}
+            responsive={true}
+            allowZoom={false}
             zoomDimension="x"
             zoomDomain={zoomDomain}
             onZoomDomainChange={handleZoom}
@@ -58,7 +58,7 @@ const App = () => {
         <VictoryLine style={{ data: { stroke: 'tomato' } }} data={ecgData} />
       </VictoryChart>
 
-      <VictoryChart
+      {/* <VictoryChart
         padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
         width={600}
         height={100}
@@ -67,17 +67,20 @@ const App = () => {
           <VictoryBrushContainer
             responsive={false}
             brushDimension="x"
-            brushDomain={selectDomain}
-            onBrushDomainChange={handleBrush}
+            brushDomain={zoomDomain}
+            onBrushDomainChange={handleZoom}
           />
         }
       >
-        <VictoryAxis tickFormat={x => new Date(x).getUTCMilliseconds()} />
+        tickFormat={x => new Date(x).getUTCMilliseconds()}
+        <VictoryAxis  />
         <VictoryLine
           style={{data: { stroke: 'tomato' }}}
           data={ecgData}
+          x='x'
+          y='flat'
         />
-      </VictoryChart>
+      </VictoryChart> */}
     </div>
   );
 };
