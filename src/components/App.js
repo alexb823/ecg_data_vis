@@ -33,7 +33,7 @@ const App = () => {
   const getEntireDomain = ecgData => {
     const firstXVal = ecgData[0].x;
     const lastXVal = ecgData[ecgData.length - 1].x;
-    return { x: [firstXVal, lastXVal], y: [-2500, 3500] };
+    return { x: [firstXVal, lastXVal], y: [-3000, 4000] };
   };
 
   useEffect(() => {
@@ -59,8 +59,8 @@ const App = () => {
       <VictoryChart
         theme={VictoryTheme.material}
         domain={entireDomain}
-        width={900}
-        height={470}
+        width={700}
+        height={350}
         scale={{ x: 'time' }}
         containerComponent={
           <VictoryZoomContainer
@@ -72,8 +72,18 @@ const App = () => {
           />
         }
       >
-        <VictoryAxis offsetY={50} />
-        <VictoryAxis dependentAxis offsetX={50} crossAxis={false} />
+        <VictoryAxis
+          offsetY={50}
+          tickFormat={time =>
+            `${time.getUTCHours()}:${time.getUTCMinutes()}:${time.getUTCSeconds()}`
+          }
+        />
+        <VictoryAxis
+          dependentAxis
+          offsetX={50}
+          crossAxis={false}
+          tickFormat={mv => `${mv / 1000}mV`}
+        />
 
         <VictoryLine style={{ data: { stroke: 'tomato' } }} data={getData()} />
       </VictoryChart>
