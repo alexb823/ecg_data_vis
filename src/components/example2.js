@@ -80,3 +80,28 @@ class App extends React.Component {
 }
 
 ReactDOM.render(<App/>, mountNode);
+
+
+      {/* <VictoryChart
+        padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
+        width={600}
+        height={100}
+        scale={{ x: 'time' }}
+        containerComponent={
+          <VictoryBrushContainer
+            responsive={false}
+            brushDimension="x"
+            brushDomain={zoomDomain}
+            onBrushDomainChange={handleZoom}
+          />
+        }
+      >
+        <VictoryAxis />
+        <VictoryLine
+          style={{data: { stroke: 'tomato' }}}
+          samples={1}
+          data={ecgData}
+          // x='x'
+          // y='flat'
+        />
+      </VictoryChart> */}
