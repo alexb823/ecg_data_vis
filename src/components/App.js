@@ -74,18 +74,52 @@ const App = () => {
       >
         <VictoryAxis
           offsetY={50}
-          tickFormat={time =>
-            `${time.getUTCHours()}:${time.getUTCMinutes()}:${time.getUTCSeconds()}`
-          }
+          // tickFormat={time =>
+          //   `${time.getUTCHours()}:${time.getUTCMinutes()}:${time.getUTCSeconds()}`
+          // }
         />
         <VictoryAxis
           dependentAxis
           offsetX={50}
           crossAxis={false}
           tickFormat={mv => `${mv / 1000}mV`}
+          style={{
+            grid: { stroke: 'none' },
+          }}
         />
 
-        <VictoryLine style={{ data: { stroke: 'tomato' } }} data={getData()} />
+        <VictoryLine
+          style={{ data: { stroke: 'tomato', strokeWidth: '2px' } }}
+          interpolation="natural"
+          data={getData()}
+
+        />
+      </VictoryChart>
+
+      <VictoryChart
+        theme={VictoryTheme.material}
+        domain={entireDomain}
+        padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
+        width={700}
+        height={80}
+        scale={{ x: 'time' }}
+        containerComponent={
+          <VictoryBrushContainer
+            responsive={false}
+            brushDimension="x"
+            brushDomain={{ x: zoomXDomain }}
+            onBrushDomainChange={handleZoom}
+          />
+        }
+      >
+        <VictoryAxis offsetY={30} />
+        <VictoryLine
+          style={{
+            data: { stroke: 'tomato', strokeWidth: '1px' },
+          }}
+          interpolation="bundle"
+          data={getData()}
+        />
       </VictoryChart>
     </div>
   );
