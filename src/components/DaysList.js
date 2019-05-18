@@ -6,7 +6,7 @@ import { mapDatesAndFiles } from './utils';
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
+    // maxWidth: 360,
     overflow: 'auto',
     maxHeight: "100vh",
     backgroundColor: theme.palette.background.paper,
