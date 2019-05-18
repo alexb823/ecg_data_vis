@@ -3,7 +3,7 @@ const parser = new DOMParser();
 const baseUrl = '/wxapp2/ecgdata/liveecg/5C0347004129';
 
 // Parse list of devise ids from the html at /wxapp2/ecgdata/liveecg
-// Or the list of date folder names for the device at /wxapp2/ecgdata/liveecg/:deviceId
+// Or the list of folder names (6 digit date as name) at /wxapp2/ecgdata/liveecg/:deviceId
 export const parseListOfLinks = str => {
   const nodeList = parser
     .parseFromString(str, 'text/html')
@@ -70,7 +70,7 @@ export const fetchDataFile = folderName => {
 
 // Put it all together
 // Make an array of obj for creating a list of links for files
-// Will have file name to append to the baseUrl/folderName, to get the file,
+// Will have file name to append to the baseUrl/folderName/:fileName, to get the file,
 // and date modified (date needed for the graph)
 export const mapDatesAndFiles = folderName => {
   return Promise.all([
@@ -78,21 +78,48 @@ export const mapDatesAndFiles = folderName => {
     fetchModifiedDates(folderName),
   ])
     .then(([filesArr, dateModArr]) =>
-      dateModArr.reduce((acc, date, index) => {
-        if (acc[date]) acc[date].push(filesArr[index]);
-        else acc[date] = [filesArr[index]];
+      filesArr.reduce((acc, fileName, index) => {
+        const strArr = fileName.split('_');
+        const fileKey = `${strArr[0]}_${strArr[1]}`;
+        const modDate = dateModArr[index];
+        const utc = Date.parse(modDate);
+        if (acc[fileKey]) {
+          acc[fileKey].push({ [utc]: filesArr[index], modDate, utc });
+        } else {
+          acc[fileKey] = [{ [utc]: filesArr[index], modDate, utc }];
+        }
         return acc;
       }, {})
     )
     .then(files => {
       return Object.keys(files).map(key => {
-        return { files: files[key], gmt: key, utc: Date.parse(key) };
+        return files[key];
       });
-    })
-    .then(filesArr => filesArr.sort((a, b) => a.utc - b.utc));
+    });
 };
 
-// parse the smoothECG.txt file into an array of Int
+// // Option using modified time as key. Probably not correct
+// export const mapDatesAndFiles = folderName => {
+//   return Promise.all([
+//     fetchDataFile(folderName),
+//     fetchModifiedDates(folderName),
+//   ])
+//     .then(([filesArr, dateModArr]) =>
+//       dateModArr.reduce((acc, date, index) => {
+//         if (acc[date]) acc[date].push(filesArr[index]);
+//         else acc[date] = [filesArr[index]];
+//         return acc;
+//       }, {})
+//     )
+//     .then(files => {
+//       return Object.keys(files).map(key => {
+//         return { files: files[key], gmt: key, utc: Date.parse(key) };
+//       });
+//     })
+//     .then(filesArr => filesArr.sort((a, b) => a.utc - b.utc));
+// };
+
+// parse the _smoothECG.txt file into an array of Int
 export const parseSmoothECG = str => {
   const ecgNode = parser
     .parseFromString(str, 'text/html')

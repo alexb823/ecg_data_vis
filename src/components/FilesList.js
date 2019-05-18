@@ -1,41 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
-import { mapDatesAndFiles } from './utils';
-
+import { gmtToLocale } from './utils';
 
 const styles = theme => ({
   root: {
     width: '100%',
-    // maxWidth: 360,
+    maxWidth: 360,
     overflow: 'auto',
-    maxHeight: "100vh",
+    maxHeight: '100vh',
     backgroundColor: theme.palette.background.paper,
   },
 });
 
-const DaysList = ({ classes, allDays, setDaysFiles }) => {
+const FilesList = ({ classes, daysFiles }) => {
   const [selectedIndex, setSelectedIndex] = useState();
-
-  const gmtToLocale = gmtTime => {
-    return new Date(gmtTime.modDate).toLocaleString();
-  };
 
   const handleListItemClick = (event, index, link) => {
     setSelectedIndex(index);
-    mapDatesAndFiles(link).then(files => setDaysFiles(files))
   };
 
   return (
     <div className={classes.root}>
       <List component="nav">
-        {allDays.map((day, idx) => (
+        {daysFiles.map((fileSet, idx) => (
           <ListItem
-            key={day.link}
+            key={fileSet[0].utc}
             button
             selected={selectedIndex === idx}
-            onClick={event => handleListItemClick(event, idx, day.link)}
+            onClick={event => handleListItemClick(event, idx, fileSet[0].utc)}
           >
-            <ListItemText primary={gmtToLocale(day)} />
+            <ListItemText
+              primary={new Date(fileSet[0].modDate).toLocaleString()}
+            />
           </ListItem>
         ))}
       </List>
@@ -43,4 +39,4 @@ const DaysList = ({ classes, allDays, setDaysFiles }) => {
   );
 };
 
-export default withStyles(styles)(DaysList);
+export default withStyles(styles)(FilesList);
