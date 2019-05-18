@@ -3,6 +3,7 @@ import { Paper, Grid, withStyles } from '@material-ui/core/';
 import { mapDatesAndFolders, mapDatesAndFiles } from './utils';
 import DaysList from './DaysList';
 import EcgGraph from './EcgGraph';
+import FilesList from './FilesList';
 
 const styles = theme => ({
   root: {
@@ -12,13 +13,13 @@ const styles = theme => ({
 
 const App = ({ classes }) => {
   const [allDays, setAllDays] = useState([]);
-  const [daysFiles, setDaysFiles] = useState({});
+  const [daysFiles, setDaysFiles] = useState([]);
 
   useEffect(() => {
     mapDatesAndFolders().then(days => setAllDays(days));
   }, []);
 
-  console.log(daysFiles)
+  console.log(daysFiles);
   // console.log(allDays);
   return (
     <div className={classes.root}>
@@ -34,7 +35,22 @@ const App = ({ classes }) => {
         </Grid>
 
         <Grid item xs={12} md={9} align="center">
-          {/* <EcgGraph /> */}
+          <EcgGraph />
+
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="flex-start"
+            spacing={24}
+          >
+            <Grid item xs={12} md={4} align="left">
+              {daysFiles.length ? <FilesList daysFiles={daysFiles} /> : null}
+            </Grid>
+            <Grid item xs={12} md={5} align="left">
+              placeholder
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </div>

@@ -78,19 +78,46 @@ export const mapDatesAndFiles = folderName => {
     fetchModifiedDates(folderName),
   ])
     .then(([filesArr, dateModArr]) =>
-      dateModArr.reduce((acc, date, index) => {
-        if (acc[date]) acc[date].push(filesArr[index]);
-        else acc[date] = [filesArr[index]];
+      filesArr.reduce((acc, fileName, index) => {
+        const strArr = fileName.split('_');
+        const fileKey = `${strArr[0]}_${strArr[1]}`;
+        const modDate = dateModArr[index];
+        const utc = Date.parse(modDate);
+        if (acc[fileKey]) {
+          acc[fileKey].push({ [utc]: filesArr[index], modDate, utc });
+        } else {
+          acc[fileKey] = [{ [utc]: filesArr[index], modDate, utc }];
+        }
         return acc;
       }, {})
     )
     .then(files => {
       return Object.keys(files).map(key => {
-        return { files: files[key], gmt: key, utc: Date.parse(key) };
+        return files[key];
       });
-    })
-    .then(filesArr => filesArr.sort((a, b) => a.utc - b.utc));
+    });
 };
+
+// // Option using modified time as key. Probably not correct
+// export const mapDatesAndFiles = folderName => {
+//   return Promise.all([
+//     fetchDataFile(folderName),
+//     fetchModifiedDates(folderName),
+//   ])
+//     .then(([filesArr, dateModArr]) =>
+//       dateModArr.reduce((acc, date, index) => {
+//         if (acc[date]) acc[date].push(filesArr[index]);
+//         else acc[date] = [filesArr[index]];
+//         return acc;
+//       }, {})
+//     )
+//     .then(files => {
+//       return Object.keys(files).map(key => {
+//         return { files: files[key], gmt: key, utc: Date.parse(key) };
+//       });
+//     })
+//     .then(filesArr => filesArr.sort((a, b) => a.utc - b.utc));
+// };
 
 // parse the _smoothECG.txt file into an array of Int
 export const parseSmoothECG = str => {
