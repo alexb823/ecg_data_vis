@@ -36,7 +36,7 @@ const App = ({ classes }) => {
         </Grid>
 
         <Grid item xs={12} md={9} align="center">
-          <EcgGraph />
+          <EcgGraph ecgDataRef={ecgDataRef}/>
 
           <Grid
             container

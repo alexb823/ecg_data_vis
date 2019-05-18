@@ -35,8 +35,8 @@ const EcgGraph = ({ecgDataRef}) => {
     return { x: [firstXVal, lastXVal], y: [-3000, 4000] };
   };
 
-  useEffect((ecgDataRef) => {
-    fetchEcg().then(ecgData => {
+  useEffect(() => {
+    fetchEcg(ecgDataRef).then(ecgData => {
       setEcgData(ecgData);
       setZoomXDomain([ecgData[0].x, ecgData[0].x + 6000]);
       setEntireDomain(getEntireDomain(ecgData));
