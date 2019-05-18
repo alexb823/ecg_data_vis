@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
 import {fetchEcg} from './utils';
 
@@ -15,9 +15,9 @@ const styles = theme => ({
 const FilesList = ({ classes, daysFiles, setEcgDataRef, setEcgData }) => {
   const [selectedIndex, setSelectedIndex] = useState();
 
-  const handleListItemClick = (event, index, fileIdx) => {
+  const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    setEcgDataRef(daysFiles[fileIdx]);
+    setEcgDataRef(daysFiles[index]);
     fetchEcg(daysFiles[index]).then(ecgData => setEcgData(ecgData))
   };
 
@@ -29,7 +29,7 @@ const FilesList = ({ classes, daysFiles, setEcgDataRef, setEcgData }) => {
             key={fileArr[0].utc}
             button
             selected={selectedIndex === idx}
-            onClick={event => handleListItemClick(event, idx, fileArr[0].utc)}
+            onClick={event => handleListItemClick(event, idx)}
           >
             <ListItemText
               primary={new Date(fileArr[0].modDate).toLocaleString()}

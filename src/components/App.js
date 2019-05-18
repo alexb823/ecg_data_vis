@@ -3,11 +3,16 @@ import { Paper, Grid, withStyles } from '@material-ui/core/';
 import { mapDatesAndFolders } from './utils';
 import DaysList from './DaysList';
 import EcgGraph from './EcgGraph3';
+import EcgGraphPlaceholder from './EcgGraph2';
 import FilesList from './FilesList';
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
+  },paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
   },
 });
 
@@ -37,7 +42,10 @@ const App = ({ classes }) => {
         </Grid>
 
         <Grid item xs={12} md={9} align="center">
-          {ecgData.length ? <EcgGraph ecgData={ecgData} /> : 0}
+          <Paper className={classes.paper} >
+
+          {ecgData.length ? <EcgGraph ecgData={ecgData} /> : <EcgGraphPlaceholder/>}
+          </Paper>
 
           <Grid
             container
@@ -45,6 +53,7 @@ const App = ({ classes }) => {
             justify="center"
             alignItems="flex-start"
             spacing={24}
+            style={{marginTop: '20px'}}
           >
             <Grid item xs={12} md={4} align="left">
               <FilesList
@@ -55,9 +64,9 @@ const App = ({ classes }) => {
             </Grid>
 
             <Grid item xs={12} md={5} align="left">
-              Placeholder for rhythm data
             </Grid>
           </Grid>
+
         </Grid>
       </Grid>
     </div>
