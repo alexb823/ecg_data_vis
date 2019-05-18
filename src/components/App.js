@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Paper, Grid, withStyles } from '@material-ui/core/';
 import { mapDatesAndFolders } from './utils';
 import DaysList from './DaysList';
-import EcgGraph from './EcgGraph';
+import EcgGraph from './EcgGraph3';
 import FilesList from './FilesList';
 
 const styles = theme => ({
@@ -15,6 +15,7 @@ const App = ({ classes }) => {
   const [allDays, setAllDays] = useState([]);
   const [daysFiles, setDaysFiles] = useState([]);
   const [ecgDataRef, setEcgDataRef] = useState([]);
+  const [ecgData, setEcgData] = useState([]);
 
   useEffect(() => {
     mapDatesAndFolders().then(days => setAllDays(days));
@@ -36,7 +37,7 @@ const App = ({ classes }) => {
         </Grid>
 
         <Grid item xs={12} md={9} align="center">
-          <EcgGraph ecgDataRef={ecgDataRef}/>
+          {ecgData.length ? <EcgGraph ecgData={ecgData} /> : 0}
 
           <Grid
             container
@@ -46,7 +47,11 @@ const App = ({ classes }) => {
             spacing={24}
           >
             <Grid item xs={12} md={4} align="left">
-              {daysFiles.length ? <FilesList daysFiles={daysFiles} setEcgData={setEcgDataRef}/> : null}
+              <FilesList
+                daysFiles={daysFiles}
+                setEcgDataRef={setEcgDataRef}
+                setEcgData={setEcgData}
+              />
             </Grid>
 
             <Grid item xs={12} md={5} align="left">

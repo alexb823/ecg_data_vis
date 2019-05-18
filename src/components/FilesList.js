@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
+import {fetchEcg} from './utils';
 
 const styles = theme => ({
   root: {
@@ -11,12 +12,13 @@ const styles = theme => ({
   },
 });
 
-const FilesList = ({ classes, daysFiles, setEcgDataRef }) => {
+const FilesList = ({ classes, daysFiles, setEcgDataRef, setEcgData }) => {
   const [selectedIndex, setSelectedIndex] = useState();
 
   const handleListItemClick = (event, index, fileIdx) => {
     setSelectedIndex(index);
-    setEcgDataRef(daysFiles[fileIdx])
+    setEcgDataRef(daysFiles[fileIdx]);
+    fetchEcg(daysFiles[index]).then(ecgData => setEcgData(ecgData))
   };
 
   return (

@@ -84,9 +84,9 @@ export const mapDatesAndFiles = folderName => {
         const modDate = dateModArr[index];
         const utc = Date.parse(modDate);
         if (acc[fileKey]) {
-          acc[fileKey].push({ name: filesArr[index], modDate, utc });
+          acc[fileKey].push({ name: filesArr[index], modDate, utc, linkEx: strArr[0] });
         } else {
-          acc[fileKey] = [{ name: filesArr[index], modDate, utc }];
+          acc[fileKey] = [{ name: filesArr[index], modDate, utc, linkEx: strArr[0] }];
         }
         return acc;
       }, {})
@@ -113,10 +113,12 @@ export const parseSmoothECG = str => {
 // Parse the text file
 // Map the x & y data points
 export const fetchEcg = ecgDataRef => {
+  console.log(ecgDataRef)
   let ecgRef = ecgDataRef.find(obj => obj.name.endsWith('_smoothECG.txt'));
+  console.log(ecgRef)
   let timeStamp = Date.parse(ecgRef.modDate);
   return axios
-    .get(`${baseUrl}/${ecgRef.name}`)
+    .get(`${baseUrl}/${ecgRef.linkEx}/${ecgRef.name}`)
     .then(response => parseSmoothECG(response.data))
     .then(ecg =>
       ecg.map(sample => {
@@ -124,7 +126,8 @@ export const fetchEcg = ecgDataRef => {
         timeStamp += 4;
         return dataPoint;
       })
-    );
+    )
+    // .then(ecgdata => console.log(ecgdata))
 };
 
 // // Option using modified time as key. Probably not correct
