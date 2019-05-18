@@ -24,13 +24,10 @@ export const parseModifiedDates = str => {
 // Fetch the folder modified GMT dates for the device at /wxapp2/ecgdata/liveecg/:deviceId
 // and parse the mod date as we filter for only unique date values
 export const fetchModifiedDates = (folderName = '') => {
-  return (
-    axios
-      .get(`${baseUrl}/${folderName}`)
-      .then(response => parseModifiedDates(response.data))
-      // .then(dates => [...new Set(dates)])
-      .then(dates => dates.reverse())
-  );
+  return axios
+    .get(`${baseUrl}/${folderName}`)
+    .then(response => parseModifiedDates(response.data))
+    .then(dates => dates.reverse());
 };
 
 // Fetch the folder name (date strings) for the device at /wxapp2/ecgdata/liveecg/:deviceId
@@ -42,16 +39,16 @@ export const fetchDateStr = () => {
     .then(dates => dates.reverse());
 };
 
+// Put it all together
 // Make an array of obj for creating a list of links
 // Will have folder name to append to the baseUrl, and date modified for the link text
 export const mapDatesAndFolders = () => {
-  return Promise.all([fetchDateStr(), fetchModifiedDates()])
-    .then(([dateStrArr, dateModArr]) =>
+  return Promise.all([fetchDateStr(), fetchModifiedDates()]).then(
+    ([dateStrArr, dateModArr]) =>
       dateStrArr.map((date, idx) => {
         return { link: date, modDate: dateModArr[idx] };
       })
-    )
-    .then(dateMap => console.log(dateMap));
+  );
 };
 
 // Parse the data files in the date folder
@@ -71,6 +68,7 @@ export const fetchDataFile = folderName => {
     .then(files => files.reverse());
 };
 
+// Put it all together
 // Make an array of obj for creating a list of links for files
 // Will have file name to append to the baseUrl/folderName, to get the file,
 // and date modified (date needed for the graph)
@@ -86,7 +84,12 @@ export const mapDatesAndFiles = folderName => {
         return acc;
       }, {})
     )
-    .then(dateMap => console.log(dateMap));
+    .then(files => {
+      return Object.keys(files).map(key => {
+        return { files: files[key], gmt: key, utc: Date.parse(key) };
+      });
+    })
+    .then(filesArr => filesArr.sort((a, b) => a.utc - b.utc));
 };
 
 // parse the smoothECG.txt file into an array of Int
