@@ -8,14 +8,13 @@ import {
   VictoryBrushContainer,
   VictoryAxis,
 } from 'victory';
-import { parseSmoothECG } from './utils';
+import fetchEcg from './utils';
 
-const EcgGraph = () => {
-  const baseUrl = '/wxapp2/ecgdata/liveecg/5C0347004129';
-  let time = Date.parse('Thu, 16 May 2019 06:57:18 GMT');
+const EcgGraph = ({ecgDataRef}) => {
+
   //State
-  const [ecgData, setEcgData] = useState([]);
-  const [zoomXDomain, setZoomXDomain] = useState([time, time + 6000]);
+  const [ecgData, setEcgData] = useState([])
+  const [zoomXDomain, setZoomXDomain] = useState([0, 6000]);
   const [entireDomain, setEntireDomain] = useState({});
 
   // only keeping track of the X dimension
@@ -36,27 +35,38 @@ const EcgGraph = () => {
     return { x: [firstXVal, lastXVal], y: [-3000, 4000] };
   };
 
-  const fetchEcg = () => {
-    let timeStamp = Date.parse('Thu, 16 May 2019 06:57:18 GMT');
-    axios
-      .get(`${baseUrl}/20190516/20190516_145335_5C0347004129_smoothECG.txt`)
-      .then(response => parseSmoothECG(response.data))
-      .then(ecg =>
-        ecg.map(sample => {
-          const dataPoint = { x: timeStamp, y: sample, flat: 0 };
-          timeStamp += 4;
-          return dataPoint;
-        })
-      )
-      .then(ecgData => {
-        setEcgData(ecgData);
-        setEntireDomain(getEntireDomain(ecgData));
-      });
-  }
+  useEffect((ecgDataRef) => {
+    fetchEcg().then(ecgData => {
+      setEcgData(ecgData);
+      setZoomXDomain([ecgData[0].x, ecgData[0].x + 6000]);
+      setEntireDomain(getEntireDomain(ecgData));
+    });
+  }, [ecgDataRef]);
 
-  useEffect(() => {
-    fetchEcg();
-  }, []);
+
+
+  // const fetchEcg = () => {
+  //   let timeStamp = Date.parse('Thu, 16 May 2019 06:57:18 GMT');
+  //   axios
+  //     .get(`${baseUrl}/20190516/20190516_145335_5C0347004129_smoothECG.txt`)
+  //     .then(response => parseSmoothECG(response.data))
+  //     .then(ecg =>
+  //       ecg.map(sample => {
+  //         const dataPoint = { x: timeStamp, y: sample, flat: 0 };
+  //         timeStamp += 4;
+  //         return dataPoint;
+  //       })
+  //     )
+  //     .then(ecgData => {
+  //       setEcgData(ecgData);
+  //       setEntireDomain(getEntireDomain(ecgData));
+  //     });
+  // }
+
+  // .then(ecgData => {
+  //   setEcgData(ecgData);
+  //   setEntireDomain(getEntireDomain(ecgData));
+  // });
 
   return (
     <div>
@@ -78,9 +88,6 @@ const EcgGraph = () => {
       >
         <VictoryAxis
           offsetY={50}
-          // tickFormat={time =>
-          //   `${time.getUTCHours()}:${time.getUTCMinutes()}:${time.getUTCSeconds()}`
-          // }
         />
         <VictoryAxis
           dependentAxis

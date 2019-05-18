@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, Grid, withStyles } from '@material-ui/core/';
-import { mapDatesAndFolders, mapDatesAndFiles } from './utils';
+import { mapDatesAndFolders } from './utils';
 import DaysList from './DaysList';
 import EcgGraph from './EcgGraph';
 import FilesList from './FilesList';
@@ -14,6 +14,7 @@ const styles = theme => ({
 const App = ({ classes }) => {
   const [allDays, setAllDays] = useState([]);
   const [daysFiles, setDaysFiles] = useState([]);
+  const [ecgDataRef, setEcgDataRef] = useState([]);
 
   useEffect(() => {
     mapDatesAndFolders().then(days => setAllDays(days));
@@ -45,10 +46,11 @@ const App = ({ classes }) => {
             spacing={24}
           >
             <Grid item xs={12} md={4} align="left">
-              {daysFiles.length ? <FilesList daysFiles={daysFiles} /> : null}
+              {daysFiles.length ? <FilesList daysFiles={daysFiles} setEcgData={setEcgDataRef}/> : null}
             </Grid>
+
             <Grid item xs={12} md={5} align="left">
-              placeholder
+              Placeholder for rhythm data
             </Grid>
           </Grid>
         </Grid>

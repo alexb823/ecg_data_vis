@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
-import { gmtToLocale } from './utils';
 
 const styles = theme => ({
   root: {
@@ -12,25 +11,26 @@ const styles = theme => ({
   },
 });
 
-const FilesList = ({ classes, daysFiles }) => {
+const FilesList = ({ classes, daysFiles, setEcgDataRef }) => {
   const [selectedIndex, setSelectedIndex] = useState();
 
-  const handleListItemClick = (event, index, link) => {
+  const handleListItemClick = (event, index, fileIdx) => {
     setSelectedIndex(index);
+    setEcgDataRef(daysFiles[fileIdx])
   };
 
   return (
     <div className={classes.root}>
       <List component="nav">
-        {daysFiles.map((fileSet, idx) => (
+        {daysFiles.map((fileArr, idx) => (
           <ListItem
-            key={fileSet[0].utc}
+            key={fileArr[0].utc}
             button
             selected={selectedIndex === idx}
-            onClick={event => handleListItemClick(event, idx, fileSet[0].utc)}
+            onClick={event => handleListItemClick(event, idx, fileArr[0].utc)}
           >
             <ListItemText
-              primary={new Date(fileSet[0].modDate).toLocaleString()}
+              primary={new Date(fileArr[0].modDate).toLocaleString()}
             />
           </ListItem>
         ))}

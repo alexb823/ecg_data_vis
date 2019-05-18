@@ -84,9 +84,9 @@ export const mapDatesAndFiles = folderName => {
         const modDate = dateModArr[index];
         const utc = Date.parse(modDate);
         if (acc[fileKey]) {
-          acc[fileKey].push({ [utc]: filesArr[index], modDate, utc });
+          acc[fileKey].push({ name: filesArr[index], modDate, utc });
         } else {
-          acc[fileKey] = [{ [utc]: filesArr[index], modDate, utc }];
+          acc[fileKey] = [{ name: filesArr[index], modDate, utc }];
         }
         return acc;
       }, {})
@@ -96,6 +96,35 @@ export const mapDatesAndFiles = folderName => {
         return files[key];
       });
     });
+};
+
+// parse the _smoothECG.txt file into an array of Int
+export const parseSmoothECG = str => {
+  const ecgNode = parser
+    .parseFromString(str, 'text/html')
+    .querySelector('body');
+  return ecgNode.innerText
+    .trim()
+    .split('\n')
+    .map(strNum => parseInt(strNum));
+};
+
+// Get the ecg data
+// Parse the text file
+// Map the x & y data points
+export const fetchEcg = ecgDataRef => {
+  let ecgRef = ecgDataRef.find(obj => obj.name.endsWith('_smoothECG.txt'));
+  let timeStamp = Date.parse(ecgRef.modDate);
+  return axios
+    .get(`${baseUrl}/${ecgRef.name}`)
+    .then(response => parseSmoothECG(response.data))
+    .then(ecg =>
+      ecg.map(sample => {
+        const dataPoint = { x: timeStamp, y: sample };
+        timeStamp += 4;
+        return dataPoint;
+      })
+    );
 };
 
 // // Option using modified time as key. Probably not correct
@@ -118,14 +147,3 @@ export const mapDatesAndFiles = folderName => {
 //     })
 //     .then(filesArr => filesArr.sort((a, b) => a.utc - b.utc));
 // };
-
-// parse the _smoothECG.txt file into an array of Int
-export const parseSmoothECG = str => {
-  const ecgNode = parser
-    .parseFromString(str, 'text/html')
-    .querySelector('body');
-  return ecgNode.innerText
-    .trim()
-    .split('\n')
-    .map(strNum => parseInt(strNum));
-};
