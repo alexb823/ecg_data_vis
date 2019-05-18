@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {fetchModifiedDates, fetchDateStr, mapDates} from './utils'
+import {mapDatesAndFolders, mapDatesAndFiles} from './utils'
 import EcgGraph from './EcgGraph';
 
 const App = () => {
-  mapDates()
+  mapDatesAndFolders();
+  mapDatesAndFiles('20190506');
   return (
     <div>
       <EcgGraph/>
