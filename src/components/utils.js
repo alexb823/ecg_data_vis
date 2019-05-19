@@ -70,9 +70,10 @@ export const fetchDataFile = folderName => {
 
 // Put it all together
 // Make an array of obj for creating a list of links for files
-// Will have file name to append to the baseUrl/folderName/:fileName, to get the file,
+// Will have file name to append to the baseUrl/folderName/:linkEx/:fileName, to get the file,
 // and date modified (date needed for the graph)
-export const mapDatesAndFiles = folderName => {
+// folder name is the 8 dig number that the year and date (ex: 20190519)
+export const mapDatesAndFileNames = folderName => {
   return Promise.all([
     fetchDataFile(folderName),
     fetchModifiedDates(folderName),
@@ -113,9 +114,7 @@ export const parseSmoothECG = str => {
 // Parse the text file
 // Map the x & y data points
 export const fetchEcg = ecgDataRef => {
-  console.log(ecgDataRef)
   let ecgRef = ecgDataRef.find(obj => obj.name.endsWith('_smoothECG.txt'));
-  console.log(ecgRef)
   let timeStamp = Date.parse(ecgRef.modDate);
   return axios
     .get(`${baseUrl}/${ecgRef.linkEx}/${ecgRef.name}`)
@@ -127,11 +126,10 @@ export const fetchEcg = ecgDataRef => {
         return dataPoint;
       })
     )
-    // .then(ecgdata => console.log(ecgdata))
 };
 
 // // Option using modified time as key. Probably not correct
-// export const mapDatesAndFiles = folderName => {
+// export const mapDatesAndFileNames = folderName => {
 //   return Promise.all([
 //     fetchDataFile(folderName),
 //     fetchModifiedDates(folderName),
