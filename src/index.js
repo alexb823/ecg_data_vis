@@ -6,6 +6,9 @@ import {blue, red} from '@material-ui/core/colors';
 import App from './components/App';
 
 const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
   palette: {
     primary: blue,
     secondary: red,

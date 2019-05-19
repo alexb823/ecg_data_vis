@@ -42,8 +42,8 @@ const EcgGraph = ({ ecgData }) => {
       <VictoryChart
         theme={VictoryTheme.material}
         domain={entireDomain}
-        width={700}
-        height={350}
+        width={800}
+        height={400}
         scale={{ x: 'time' }}
         containerComponent={
           <VictoryZoomContainer
@@ -79,7 +79,7 @@ const EcgGraph = ({ ecgData }) => {
         theme={VictoryTheme.material}
         domain={entireDomain}
         padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
-        width={700}
+        width={800}
         height={80}
         scale={{ x: 'time' }}
         containerComponent={

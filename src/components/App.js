@@ -3,7 +3,6 @@ import { Paper, Grid, CircularProgress, withStyles } from '@material-ui/core/';
 import { mapDatesAndFolders, mapDatesAndFileNames, fetchEcg } from './utils';
 import DaysList from './DaysList';
 import EcgGraph from './EcgGraph';
-import EcgGraphPlaceholder from './EcgGraph2';
 import FilesList from './FilesList';
 
 const styles = theme => ({
@@ -12,7 +11,8 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2,
-    maxWidth: 716,
+    // maxWidth: 816,
+    width: 816,
     marginTop: 40,
     textAlign: 'center',
     color: theme.palette.text.secondary,
