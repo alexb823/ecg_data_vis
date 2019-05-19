@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { List, ListItem, withStyles, ListItemText, Paper } from '@material-ui/core/';
-import {fetchEcg} from './utils';
+import {
+  List,
+  ListItem,
+  withStyles,
+  ListItemText,
+  Paper,
+} from '@material-ui/core/';
+import { fetchEcg } from './utils';
 
 const styles = theme => ({
   root: {
@@ -23,32 +29,35 @@ const FilesList = ({ classes, oneDaysFiles, setEcgDataRef, setEcgData }) => {
 
   useEffect(() => {
     setSelectedIndex(0);
-  }, [oneDaysFiles])
+    if (oneDaysFiles.length) {
+      fetchEcg(oneDaysFiles[0]).then(ecgData => setEcgData(ecgData));
+    }
+  }, [oneDaysFiles]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
     setEcgDataRef(oneDaysFiles[index]);
-    fetchEcg(oneDaysFiles[index]).then(ecgData => setEcgData(ecgData))
+    fetchEcg(oneDaysFiles[index]).then(ecgData => setEcgData(ecgData));
   };
 
   return (
     <Paper>
-    <div className={classes.root}>
-      <List component="nav">
-        {oneDaysFiles.map((fileArr, idx) => (
-          <ListItem
-            key={fileArr[0].utc}
-            button
-            selected={selectedIndex === idx}
-            onClick={event => handleListItemClick(event, idx)}
-          >
-            <ListItemText
-              primary={new Date(fileArr[0].modDate).toLocaleString()}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </div>
+      <div className={classes.root}>
+        <List component="nav">
+          {oneDaysFiles.map((fileArr, idx) => (
+            <ListItem
+              key={fileArr[0].utc}
+              button
+              selected={selectedIndex === idx}
+              onClick={event => handleListItemClick(event, idx)}
+            >
+              <ListItemText
+                primary={new Date(fileArr[0].modDate).toLocaleString()}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </div>
     </Paper>
   );
 };
