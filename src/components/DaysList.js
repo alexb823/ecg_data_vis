@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
-import { mapDatesAndFiles } from './utils';
+import { mapDatesAndFileNames } from './utils';
 
 
 const styles = theme => ({
@@ -13,8 +13,8 @@ const styles = theme => ({
   },
 });
 
-const DaysList = ({ classes, allDays, setDaysFiles }) => {
-  const [selectedIndex, setSelectedIndex] = useState();
+const DaysList = ({ classes, allDays, setOneDaysFiles }) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const gmtToLocale = gmtTime => {
     return new Date(gmtTime.modDate).toLocaleString();
@@ -22,7 +22,7 @@ const DaysList = ({ classes, allDays, setDaysFiles }) => {
 
   const handleListItemClick = (event, index, link) => {
     setSelectedIndex(index);
-    mapDatesAndFiles(link).then(files => setDaysFiles(files))
+    mapDatesAndFileNames(link).then(files => setOneDaysFiles(files))
   };
 
   return (

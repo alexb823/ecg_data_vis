@@ -70,9 +70,10 @@ export const fetchDataFile = folderName => {
 
 // Put it all together
 // Make an array of obj for creating a list of links for files
-// Will have file name to append to the baseUrl/folderName/:fileName, to get the file,
+// Will have file name to append to the baseUrl/folderName/:linkEx/:fileName, to get the file,
 // and date modified (date needed for the graph)
-export const mapDatesAndFiles = folderName => {
+// folder name is the 8 dig number that the year and date (ex: 20190519)
+export const mapDatesAndFileNames = folderName => {
   return Promise.all([
     fetchDataFile(folderName),
     fetchModifiedDates(folderName),
@@ -84,9 +85,9 @@ export const mapDatesAndFiles = folderName => {
         const modDate = dateModArr[index];
         const utc = Date.parse(modDate);
         if (acc[fileKey]) {
-          acc[fileKey].push({ [utc]: filesArr[index], modDate, utc });
+          acc[fileKey].push({ name: filesArr[index], modDate, utc, linkEx: strArr[0] });
         } else {
-          acc[fileKey] = [{ [utc]: filesArr[index], modDate, utc }];
+          acc[fileKey] = [{ name: filesArr[index], modDate, utc, linkEx: strArr[0] }];
         }
         return acc;
       }, {})
@@ -98,8 +99,37 @@ export const mapDatesAndFiles = folderName => {
     });
 };
 
+// parse the _smoothECG.txt file into an array of Int
+export const parseSmoothECG = str => {
+  const ecgNode = parser
+    .parseFromString(str, 'text/html')
+    .querySelector('body');
+  return ecgNode.innerText
+    .trim()
+    .split('\n')
+    .map(strNum => parseInt(strNum));
+};
+
+// Get the ecg data
+// Parse the text file
+// Map the x & y data points
+export const fetchEcg = ecgDataRef => {
+  let ecgRef = ecgDataRef.find(obj => obj.name.endsWith('_smoothECG.txt'));
+  let timeStamp = Date.parse(ecgRef.modDate);
+  return axios
+    .get(`${baseUrl}/${ecgRef.linkEx}/${ecgRef.name}`)
+    .then(response => parseSmoothECG(response.data))
+    .then(ecg =>
+      ecg.map(sample => {
+        const dataPoint = { x: timeStamp, y: sample };
+        timeStamp += 4;
+        return dataPoint;
+      })
+    )
+};
+
 // // Option using modified time as key. Probably not correct
-// export const mapDatesAndFiles = folderName => {
+// export const mapDatesAndFileNames = folderName => {
 //   return Promise.all([
 //     fetchDataFile(folderName),
 //     fetchModifiedDates(folderName),
@@ -118,14 +148,3 @@ export const mapDatesAndFiles = folderName => {
 //     })
 //     .then(filesArr => filesArr.sort((a, b) => a.utc - b.utc));
 // };
-
-// parse the _smoothECG.txt file into an array of Int
-export const parseSmoothECG = str => {
-  const ecgNode = parser
-    .parseFromString(str, 'text/html')
-    .querySelector('body');
-  return ecgNode.innerText
-    .trim()
-    .split('\n')
-    .map(strNum => parseInt(strNum));
-};
