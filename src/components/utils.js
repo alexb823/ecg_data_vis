@@ -26,7 +26,7 @@ export const parseModifiedDates = str => {
 // and parse the mod date as we filter for only unique date values
 export const fetchModifiedDates = (deviseId, folderName = '') => {
   return axios
-    .get(`${baseUrl}/${deviseId}/${folderName}`)
+    .get(`${baseUrl}/5C0347004129/${folderName}`)
     .then(response => parseModifiedDates(response.data))
     .then(dates => dates.reverse());
 };
@@ -36,7 +36,7 @@ export const fetchModifiedDates = (deviseId, folderName = '') => {
 // and parse the list of links
 export const fetchFolderNames = (deviseId) => {
   return axios
-    .get(`${baseUrl}/${deviseId}`)
+    .get(`${baseUrl}/5C0347004129`)
     .then(response => parseListOfLinks(response.data))
     .then(dates => dates.reverse());
 };
@@ -67,7 +67,7 @@ export const parseListOfFiles = str => {
 // Returns an array of file names in the folder
 export const fetchDataFile = (deviseId, folderName) => {
   return axios
-    .get(`${baseUrl}/${deviseId}/${folderName}`)
+    .get(`${baseUrl}/5C0347004129/${folderName}`)
     .then(response => parseListOfFiles(response.data))
     .then(files => files.reverse());
 };
@@ -129,7 +129,7 @@ export const fetchEcg = ecgDataRef => {
   let ecgRef = ecgDataRef.find(obj => obj.name.endsWith('_smoothECG.txt'));
   let timeStamp = Date.parse(ecgRef.modDate);
   return axios
-    .get(`${baseUrl}/${deviseId}/${ecgRef.linkEx}/${ecgRef.name}`)
+    .get(`${baseUrl}/5C0347004129/${ecgRef.linkEx}/${ecgRef.name}`)
     .then(response => parseSmoothECG(response.data))
     .then(ecg =>
       ecg.map(sample => {
