@@ -104,14 +104,22 @@ export const mapDatesAndFileNames = (deviseId, folderName) => {
 };
 
 // parse the _smoothECG.txt file into an array of Int
-export const parseSmoothECG = str => {
+// some files have 2 columns of text
+const parseSmoothECG = str => {
   const ecgNode = parser
     .parseFromString(str, 'text/html')
     .querySelector('body');
   return ecgNode.innerText
     .trim()
     .split('\n')
-    .map(strNum => parseInt(strNum));
+    .reduce((acc, str) => {
+      if (str.includes(' \t')) {
+        acc.push(parseInt(str.split(' \t')[1]))
+      } else {
+        acc.push(parseInt(str))
+      }
+      return acc;
+    }, []);
 };
 
 // Get the ecg data txt file and parse the text
