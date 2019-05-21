@@ -82,7 +82,7 @@ const EcgGraph = ({ ecgData }) => {
         theme={VictoryTheme.material}
         domain={entireDomain}
         padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
-        width={740}
+        width={734}
         height={80}
         scale={{ x: 'time' }}
         containerComponent={
