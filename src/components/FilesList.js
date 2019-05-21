@@ -30,7 +30,7 @@ const FilesList = ({ classes, oneDaysFiles, setEcgDataRef, setEcgData, deviceId 
 
   useEffect(() => {
     setSelectedIndex(0);
-    if (oneDaysFiles.length) {
+    if (oneDaysFiles.length && deviceId) {
       fetchEcg(deviceId, oneDaysFiles[0]).then(ecgData => setEcgData(ecgData));
     }
   }, [oneDaysFiles, deviceId]);
