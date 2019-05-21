@@ -17,31 +17,32 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   paper: {
-    padding: theme.spacing.unit * 2,
+    // padding: theme.spacing.unit * 2,
     marginTop: 20,
+    maxWidth: 360,
     // textAlign: 'center',
     color: theme.palette.text.secondary,
   },
 });
 
-const FilesList = ({ classes, oneDaysFiles, setEcgDataRef, setEcgData }) => {
+const FilesList = ({ classes, oneDaysFiles, setEcgDataRef, setEcgData, deviceId }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     setSelectedIndex(0);
     if (oneDaysFiles.length) {
-      fetchEcg(oneDaysFiles[0]).then(ecgData => setEcgData(ecgData));
+      fetchEcg(deviceId, oneDaysFiles[0]).then(ecgData => setEcgData(ecgData));
     }
   }, [oneDaysFiles]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
     setEcgDataRef(oneDaysFiles[index]);
-    fetchEcg(oneDaysFiles[index]).then(ecgData => setEcgData(ecgData));
+    fetchEcg(deviceId, oneDaysFiles[index]).then(ecgData => setEcgData(ecgData));
   };
 
   return (
-    <Paper>
+    <Paper className={classes.paper}>
       <div className={classes.root}>
         <List component="nav">
           {oneDaysFiles.map((fileArr, idx) => (

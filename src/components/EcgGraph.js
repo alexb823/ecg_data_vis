@@ -42,7 +42,7 @@ const EcgGraph = ({ ecgData }) => {
       <VictoryChart
         theme={VictoryTheme.material}
         domain={entireDomain}
-        width={740}
+        width={734}
         height={400}
         scale={{ x: 'time' }}
         containerComponent={

@@ -12,7 +12,7 @@ const theme = createMuiTheme({
   palette: {
     primary: blue,
     secondary: red,
-  },
+  }
 });
 
 ReactDOM.render(

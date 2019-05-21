@@ -13,7 +13,7 @@ const styles = theme => ({
   },
 });
 
-const DaysList = ({ classes, allDays, setOneDaysFiles }) => {
+const DaysList = ({ classes, allDays, setOneDaysFiles, deviceId }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const gmtToLocale = gmtTime => {
@@ -22,7 +22,7 @@ const DaysList = ({ classes, allDays, setOneDaysFiles }) => {
 
   const handleListItemClick = (event, index, link) => {
     setSelectedIndex(index);
-    mapDatesAndFileNames(link).then(files => setOneDaysFiles(files))
+    mapDatesAndFileNames(deviceId, link).then(files => setOneDaysFiles(files))
   };
 
   return (

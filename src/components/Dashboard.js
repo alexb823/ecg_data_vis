@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Grid, CircularProgress, withStyles } from '@material-ui/core/';
+import { Paper, Grid, CircularProgress } from '@material-ui/core/';
+import { withStyles } from '@material-ui/core/styles';
 import { mapDatesAndFolders, mapDatesAndFileNames, fetchEcg } from './utils';
 import DaysList from './DaysList';
 import EcgGraph from './EcgGraph';
@@ -11,8 +12,8 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2,
-    // maxWidth: 772,
-    width: 772,
+    // maxWidth: 768,
+    width: 768,
     marginTop: 40,
     textAlign: 'center',
     color: theme.palette.text.secondary,
@@ -25,7 +26,9 @@ const styles = theme => ({
   },
 });
 
-const Dashboard = ({ classes }) => {
+const Dashboard = ({ classes, match }) => {
+  const {deviceId} = match.params;
+
   const [allDays, setAllDays] = useState([]);
   const [oneDaysFiles, setOneDaysFiles] = useState([]);
   const [ecgDataRef, setEcgDataRef] = useState([]);
@@ -34,19 +37,19 @@ const Dashboard = ({ classes }) => {
   // When the App first mounts list of athe days/folder is set on state
   // and data for the laters ecg is fetched and rendered
   useEffect(() => {
-    mapDatesAndFolders()
+    mapDatesAndFolders(deviceId)
       .then(days => {
         setAllDays(days);
-        return mapDatesAndFileNames(days[0].link);
+        return mapDatesAndFileNames(deviceId, days[0].link);
       })
       .then(latestFiles => {
         setOneDaysFiles(latestFiles);
-        return fetchEcg(latestFiles[0]);
+        return fetchEcg(deviceId, latestFiles[0]);
       })
       .then(ecgData => {
         setEcgData(ecgData);
       });
-  }, []);
+  }, [match]);
 
   // console.log('days files', oneDaysFiles);
   // console.log('all days', allDays);
@@ -74,7 +77,7 @@ const Dashboard = ({ classes }) => {
           spacing={24}
         >
           <Grid item xs={12} md={3}>
-            <DaysList allDays={allDays} setOneDaysFiles={setOneDaysFiles} />
+            <DaysList deviceId={deviceId} allDays={allDays} setOneDaysFiles={setOneDaysFiles} />
           </Grid>
 
           <Grid item xs={12} md={9} align="center">
@@ -96,6 +99,7 @@ const Dashboard = ({ classes }) => {
             >
               <Grid item xs={12} md={4} align="left">
                 <FilesList
+                  deviceId={deviceId}
                   oneDaysFiles={oneDaysFiles}
                   setEcgDataRef={setEcgDataRef}
                   setEcgData={setEcgData}
