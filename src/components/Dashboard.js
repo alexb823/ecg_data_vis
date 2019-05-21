@@ -49,7 +49,7 @@ const Dashboard = ({ classes, match }) => {
       .then(ecgData => {
         setEcgData(ecgData);
       });
-  }, [match]);
+  }, [match.params.deviceId]);
 
   // console.log('days files', oneDaysFiles);
   // console.log('all days', allDays);

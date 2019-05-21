@@ -33,7 +33,7 @@ const FilesList = ({ classes, oneDaysFiles, setEcgDataRef, setEcgData, deviceId 
     if (oneDaysFiles.length) {
       fetchEcg(deviceId, oneDaysFiles[0]).then(ecgData => setEcgData(ecgData));
     }
-  }, [oneDaysFiles]);
+  }, [oneDaysFiles, deviceId]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
@@ -47,7 +47,7 @@ const FilesList = ({ classes, oneDaysFiles, setEcgDataRef, setEcgData, deviceId 
         <List component="nav">
           {oneDaysFiles.map((fileArr, idx) => (
             <ListItem
-              key={fileArr[0].utc}
+              key={idx}
               button
               selected={selectedIndex === idx}
               onClick={event => handleListItemClick(event, idx)}

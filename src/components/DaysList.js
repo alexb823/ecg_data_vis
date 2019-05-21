@@ -30,7 +30,7 @@ const DaysList = ({ classes, allDays, setOneDaysFiles, deviceId }) => {
       <List component="nav">
         {allDays.map((day, idx) => (
           <ListItem
-            key={day.link}
+            key={idx}
             button
             selected={selectedIndex === idx}
             onClick={event => handleListItemClick(event, idx, day.link)}

@@ -26,7 +26,7 @@ function TemporaryDrawer({classes, devices, toggleDrawer, open}) {
   const sideList = (
     <div className={classes.list}>
       <List>
-          {devices.map(deviceId => <ListItem key={deviceId} button component={Link} to={`/${deviceId}`}>
+          {devices.map((deviceId, index) => <ListItem key={index} button component={Link} to={`/${deviceId}`}>
             <ListItemText primary={deviceId} />
           </ListItem>)}
       </List>
