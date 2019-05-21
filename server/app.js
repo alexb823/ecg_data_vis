@@ -10,6 +10,7 @@ app.use(express.json());
 
 // Static middleware
 app.use(express.static(path.join(__dirname, '..', 'dist')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Proxy server router
 // Requests starting with /wxapp2/ecgdata/liveecg will proxy to https://paf3.ecordum.cn

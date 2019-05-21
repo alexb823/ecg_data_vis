@@ -30,9 +30,10 @@ export const fetchModifiedDates = (folderName = '') => {
     .then(dates => dates.reverse());
 };
 
-// Fetch the folder name (date strings) for the device at /wxapp2/ecgdata/liveecg/:deviceId
+// Fetch the folder name (which is an 8 digit date strings)
+// for the device at /wxapp2/ecgdata/liveecg/:deviceId
 // and parse the list of links
-export const fetchDateStr = () => {
+export const fetchFolderNames = () => {
   return axios
     .get(`${baseUrl}`)
     .then(response => parseListOfLinks(response.data))
@@ -43,10 +44,10 @@ export const fetchDateStr = () => {
 // Make an array of obj for creating a list of links
 // Will have folder name to append to the baseUrl, and date modified for the link text
 export const mapDatesAndFolders = () => {
-  return Promise.all([fetchDateStr(), fetchModifiedDates()]).then(
-    ([dateStrArr, dateModArr]) =>
-      dateStrArr.map((date, idx) => {
-        return { link: date, modDate: dateModArr[idx] };
+  return Promise.all([fetchFolderNames(), fetchModifiedDates()]).then(
+    ([folderNamesArr, dateModArr]) =>
+      folderNamesArr.map((folderName, idx) => {
+        return { link: folderName, modDate: dateModArr[idx] };
       })
   );
 };
@@ -59,8 +60,10 @@ export const parseListOfFiles = str => {
   return Array.from(nodeList).map(tt => tt.innerText);
 };
 
-// Fetch the data files for a date for the device at /wxapp2/ecgdata/liveecg/:deviceId/:folderNum
+// Fetch the data files for a date for the device
+// at /wxapp2/ecgdata/liveecg/:deviceId/:folderNum
 // and parse the list of links
+// Returns an array of file names in the folder
 export const fetchDataFile = folderName => {
   return axios
     .get(`${baseUrl}/${folderName}`)
@@ -69,10 +72,10 @@ export const fetchDataFile = folderName => {
 };
 
 // Put it all together
-// Make an array of obj for creating a list of links for files
-// Will have file name to append to the baseUrl/folderName/:linkEx/:fileName, to get the file,
-// and date modified (date needed for the graph)
-// folder name is the 8 dig number that the year and date (ex: 20190519)
+// Returns an array of obj for creating a list of links for files
+// Each obj will have file name to append to the baseUrl/deviseId/folderName/:linkEx/:fileName
+// to get the file, and date modified (date needed for the graph)
+// folder name is the 8 dig number with the year and date (ex: 20190519)
 export const mapDatesAndFileNames = folderName => {
   return Promise.all([
     fetchDataFile(folderName),
@@ -100,19 +103,27 @@ export const mapDatesAndFileNames = folderName => {
 };
 
 // parse the _smoothECG.txt file into an array of Int
-export const parseSmoothECG = str => {
+// some files have 2 columns of text
+const parseSmoothECG = str => {
   const ecgNode = parser
     .parseFromString(str, 'text/html')
     .querySelector('body');
   return ecgNode.innerText
     .trim()
     .split('\n')
-    .map(strNum => parseInt(strNum));
+    .reduce((acc, str) => {
+      if (str.includes(' \t')) {
+        acc.push(parseInt(str.split(' \t')[1]))
+      } else {
+        acc.push(parseInt(str))
+      }
+      return acc;
+    }, []);
 };
 
-// Get the ecg data
-// Parse the text file
+// Get the ecg data txt file and parse the text
 // Map the x & y data points
+// Returns an array of objects with x and y values for the ecg graph
 export const fetchEcg = ecgDataRef => {
   let ecgRef = ecgDataRef.find(obj => obj.name.endsWith('_smoothECG.txt'));
   let timeStamp = Date.parse(ecgRef.modDate);

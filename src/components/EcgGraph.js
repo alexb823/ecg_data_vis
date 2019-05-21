@@ -42,7 +42,7 @@ const EcgGraph = ({ ecgData }) => {
       <VictoryChart
         theme={VictoryTheme.material}
         domain={entireDomain}
-        width={800}
+        width={740}
         height={400}
         scale={{ x: 'time' }}
         containerComponent={
@@ -57,6 +57,9 @@ const EcgGraph = ({ ecgData }) => {
       >
         <VictoryAxis
           offsetY={50}
+          style={{
+            grid: { stroke: 'none' },
+          }}
         />
         <VictoryAxis
           dependentAxis
@@ -79,7 +82,7 @@ const EcgGraph = ({ ecgData }) => {
         theme={VictoryTheme.material}
         domain={entireDomain}
         padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
-        width={800}
+        width={740}
         height={80}
         scale={{ x: 'time' }}
         containerComponent={
@@ -91,7 +94,7 @@ const EcgGraph = ({ ecgData }) => {
           />
         }
       >
-        <VictoryAxis offsetY={30} />
+        <VictoryAxis offsetY={30} style={{ grid: { stroke: 'none' } }}/>
         <VictoryLine
           style={{
             data: { stroke: 'tomato', strokeWidth: '1px' },
