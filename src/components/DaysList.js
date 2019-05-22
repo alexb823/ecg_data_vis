@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
 import { mapDatesAndFileNames } from './utils';
-
 
 const styles = theme => ({
   root: {
@@ -42,5 +42,7 @@ const DaysList = ({ classes, allDays, setOneDaysFiles, deviceId }) => {
     </div>
   );
 };
+
+
 
 export default withStyles(styles)(DaysList);

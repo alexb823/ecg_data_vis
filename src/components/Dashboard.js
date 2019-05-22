@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Paper, Grid, CircularProgress } from '@material-ui/core/';
 import { withStyles } from '@material-ui/core/styles';
 import { mapDatesAndFolders, mapDatesAndFileNames, fetchEcg } from './utils';
+import { connect } from 'react-redux';
+import {fetchAllDaysFolders} from '../reducers/devicesReducer';
+
 import DaysList from './DaysList';
 import EcgGraph from './EcgGraph';
 import FilesList from './FilesList';
@@ -26,7 +29,7 @@ const styles = theme => ({
   },
 });
 
-const Dashboard = ({ classes, match }) => {
+const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
   const {deviceId} = match.params;
 
   const [allDays, setAllDays] = useState([]);
@@ -37,11 +40,7 @@ const Dashboard = ({ classes, match }) => {
   // When the App first mounts list of athe days/folder is set on state
   // and data for the laters ecg is fetched and rendered
   useEffect(() => {
-    mapDatesAndFolders(deviceId)
-      .then(days => {
-        setAllDays(days);
-        return mapDatesAndFileNames(deviceId, days[0].link);
-      })
+    fetchAllDaysFolders(deviceId)
       .then(latestFiles => {
         setOneDaysFiles(latestFiles);
         return fetchEcg(deviceId, latestFiles[0]);
@@ -50,6 +49,21 @@ const Dashboard = ({ classes, match }) => {
         setEcgData(ecgData);
       });
   }, [match.params.deviceId]);
+
+  // useEffect(() => {
+  //   mapDatesAndFolders(deviceId)
+  //     .then(days => {
+  //       setAllDays(days);
+  //       return mapDatesAndFileNames(deviceId, days[0].link);
+  //     })
+  //     .then(latestFiles => {
+  //       setOneDaysFiles(latestFiles);
+  //       return fetchEcg(deviceId, latestFiles[0]);
+  //     })
+  //     .then(ecgData => {
+  //       setEcgData(ecgData);
+  //     });
+  // }, [match.params.deviceId]);
 
   // console.log('days files', oneDaysFiles);
   // console.log('all days', allDays);
@@ -116,4 +130,9 @@ const Dashboard = ({ classes, match }) => {
   }
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchAllDaysFolders: (deviceId) => dispatch(fetchAllDaysFolders(deviceId))
+  }
+}
 export default withStyles(styles)(Dashboard);

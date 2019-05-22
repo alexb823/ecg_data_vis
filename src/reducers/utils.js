@@ -32,28 +32,6 @@ export const fetchModifiedDates = (deviceId, folderName = '') => {
     .then(dates => dates.reverse());
 };
 
-// Fetches list of devices, if only using baseUrl
-// Or the list folder names (which is an 8 digit date strings)
-// for the device at /wxapp2/ecgdata/liveecg/:deviceId, if diviseId is passed in
-// and parse the list of links
-export const fetchFolderNames = (deviceId='') => {
-  return axios
-    .get(`${baseUrl}/${deviceId}`)
-    .then(response => parseListOfLinks(response.data))
-    .then(dates => dates.reverse());
-};
-
-// Put it all together
-// Make an array of obj for creating a list of links
-// Will have folder name to append to the baseUrl, and date modified for the link text
-export const mapDatesAndFolders = (deviceId) => {
-  return Promise.all([fetchFolderNames(deviceId), fetchModifiedDates(deviceId)]).then(
-    ([folderNamesArr, dateModArr]) =>
-      folderNamesArr.map((folderName, idx) => {
-        return { link: folderName, modDate: dateModArr[idx] };
-      })
-  );
-};
 
 // Parse the data files in the date folder
 export const parseListOfFiles = str => {
