@@ -1,16 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 
 const styles = {
   list: {
@@ -21,20 +18,19 @@ const styles = {
   },
 };
 
-function TemporaryDrawer({classes, devices, toggleDrawer, open}) {
-
+function TemporaryDrawer({ classes, toggleDrawer, open, allDevices }) {
   const sideList = (
     <div className={classes.list}>
       <List>
-          {devices.map((deviceId, index) => <ListItem key={index} button component={Link} to={`/${deviceId}`}>
+        {allDevices.map((deviceId, index) => (
+          <ListItem key={deviceId} button component={Link} to={`/${deviceId}`}>
             <ListItemText primary={deviceId} />
-          </ListItem>)}
+          </ListItem>
+        ))}
       </List>
       <Divider />
-      
     </div>
   );
-
 
   return (
     <div>
@@ -52,4 +48,8 @@ function TemporaryDrawer({classes, devices, toggleDrawer, open}) {
   );
 }
 
-export default withStyles(styles)(TemporaryDrawer);
+const mapStateToProps = ({ allDevices }) => {
+  return { allDevices };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(TemporaryDrawer));
