@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { List, ListItem, withStyles, ListItemText, Grid, CircularProgress } from '@material-ui/core/';
 // import {fetchAllDaysFolders} from '../reducers/daysFoldersReducer';
-
-// import { mapDatesAndFileNames } from './utils';
+import {fetchdFileNamesAndDates} from '../reducers/dataFilesReducer';
 
 const styles = theme => ({
   root: {
@@ -15,18 +14,18 @@ const styles = theme => ({
   },
 });
 
-// allDays, setOneDaysFiles
-
-const DaysList = ({ classes, deviceId, allDaysFolders }) => {
+const DaysList = ({ classes, deviceId, allDaysFolders, fetchdFileNamesAndDates }) => {
+  //which list item is selected
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const gmtToLocale = gmtTime => {
     return new Date(gmtTime.modDate).toLocaleString();
   };
 
-  const handleListItemClick = (event, index, link) => {
+  const handleListItemClick = (event, index, dateLink) => {
     setSelectedIndex(index);
     // mapDatesAndFileNames(deviceId, link).then(files => setOneDaysFiles(files))
+    fetchdFileNamesAndDates(deviceId, dateLink)
   };
   
   if (!allDaysFolders.length) {
@@ -62,17 +61,19 @@ const DaysList = ({ classes, deviceId, allDaysFolders }) => {
   }
 };
 
-// const mapDispatchToProps = dispatch=> {
-//   return {
-//     fetchAllDaysFolders: (deviceId) => dispatch(fetchAllDaysFolders(deviceId)),
-//   }
-// }
 
 const mapStateToProps = ({allDaysFolders}) => {
   return {allDaysFolders}
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(DaysList));
+const mapDispatchToProps = dispatch => {
+  return {
+    // fetchAllDaysFolders: (deviceId) => dispatch(fetchAllDaysFolders(deviceId)),
+    fetchdFileNamesAndDates: (deviceId, folderName) => dispatch(fetchdFileNamesAndDates(deviceId, folderName))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(DaysList));
 
 
 
