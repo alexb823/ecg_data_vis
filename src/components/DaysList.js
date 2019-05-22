@@ -17,15 +17,19 @@ const styles = theme => ({
 const DaysList = ({ classes, deviceId, allDaysFolders, fetchdFileNamesAndDates }) => {
   //which list item is selected
   const [selectedIndex, setSelectedIndex] = useState(0);
+  
+  useEffect(() => {
+    if (allDaysFolders.length) fetchdFileNamesAndDates(deviceId, allDaysFolders[0].link);
+  }, [allDaysFolders]);
 
   const gmtToLocale = gmtTime => {
     return new Date(gmtTime.modDate).toLocaleString();
   };
 
-  const handleListItemClick = (event, index, dateLink) => {
+  const handleListItemClick = (event, index, link) => {
     setSelectedIndex(index);
     // mapDatesAndFileNames(deviceId, link).then(files => setOneDaysFiles(files))
-    fetchdFileNamesAndDates(deviceId, dateLink)
+    fetchdFileNamesAndDates(deviceId, link)
   };
   
   if (!allDaysFolders.length) {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { baseUrl, parseListOfLinks, parseModifiedDates, parseListOfFiles } from './utils';
+import { baseUrl, parseModifiedDates, parseListOfFiles } from './utils';
 
 const GOT_ALL_FILE_NAMES = 'GOT_ALL_FILE_NAMES';
 
@@ -58,13 +58,13 @@ export const fetchdFileNamesAndDates = (deviceId, folderName) => {
       .then(([filesArr, dateModArr]) =>
         filesArr.reduce((acc, fileName, index) => {
           const strArr = fileName.split('.').join('_').split('_');
-          const fileKey = `${strArr[0]}_${strArr[1]}`; //key is date_time (not mod date)
+          const filesKey = `${strArr[0]}_${strArr[1]}_${deviceId}`; //key is date_time_deviseId)
           const modDate = dateModArr[index];
           const utc = Date.parse(modDate);
-          if (acc[fileKey]) {
-            acc[fileKey].push({ name: filesArr[index], modDate, utc, linkEx: strArr[0], dateTime: fileKey });
+          if (acc[filesKey]) {
+            acc[filesKey].push({ name: filesArr[index], modDate, utc, linkEx: strArr[0], filesKey });
           } else {
-            acc[fileKey] = [{ name: filesArr[index], modDate, utc, linkEx: strArr[0], dateTime: fileKey }];
+            acc[filesKey] = [{ name: filesArr[index], modDate, utc, linkEx: strArr[0], filesKey }];
           }
           return acc;
         }, {})

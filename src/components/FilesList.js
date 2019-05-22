@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import {
   List,
   ListItem,
@@ -6,7 +7,7 @@ import {
   ListItemText,
   Paper,
 } from '@material-ui/core/';
-import { fetchEcg } from './utils';
+import { fetchEcg } from '../reducers/ecgDataReducer';
 
 const styles = theme => ({
   root: {
@@ -25,29 +26,32 @@ const styles = theme => ({
   },
 });
 
-const FilesList = ({ classes, oneDaysFiles, setEcgDataRef, setEcgData, deviceId }) => {
+const FilesList = ({ classes, deviceId, dataFilesFolders, fetchEcg }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    setSelectedIndex(0);
-    if (oneDaysFiles.length && deviceId) {
-      fetchEcg(deviceId, oneDaysFiles[0]).then(ecgData => setEcgData(ecgData));
-    }
-  }, [oneDaysFiles, deviceId]);
+    // setSelectedIndex(0);
+    // if (oneDaysFiles.length && deviceId) {
+    //   fetchEcg(deviceId, oneDaysFiles[0]).then(ecgData => setEcgData(ecgData));
+    // }
+  }, [deviceId, dataFilesFolders]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    setEcgDataRef(oneDaysFiles[index]);
-    fetchEcg(deviceId, oneDaysFiles[index]).then(ecgData => setEcgData(ecgData));
+    // setEcgDataRef(oneDaysFiles[index]);
+    fetchEcg(deviceId, dataFilesFolders[index])
   };
-
-  return (
+  
+  if (!dataFilesFolders.length) {
+    return null;
+  } else {
+      return (
     <Paper className={classes.paper}>
       <div className={classes.root}>
         <List component="nav">
-          {oneDaysFiles.map((fileArr, idx) => (
+          {dataFilesFolders.map((fileArr, idx) => (
             <ListItem
-              key={idx}
+              key={fileArr[0].filesKey}
               button
               selected={selectedIndex === idx}
               onClick={event => handleListItemClick(event, idx)}
@@ -61,6 +65,22 @@ const FilesList = ({ classes, oneDaysFiles, setEcgDataRef, setEcgData, deviceId 
       </div>
     </Paper>
   );
+  }
+
+
 };
 
-export default withStyles(styles)(FilesList);
+const mapStateToProps = ({dataFilesFolders}) => {
+  return {dataFilesFolders}
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchEcg: (deviceId, dataFilesArr) => dispatch(fetchEcg(deviceId, dataFilesArr)),
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FilesList));
+
+

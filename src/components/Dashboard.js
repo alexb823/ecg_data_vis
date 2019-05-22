@@ -92,7 +92,7 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
 
           <Grid item xs={12} md={9} align="center">
             <Paper className={classes.paper}>
-             {'ecg goes here'}
+             'ecg goes here'
             </Paper>
 
             <Grid
@@ -105,7 +105,7 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
             >
               <Grid item xs={12} md={4} align="left">
                
-               {'files list'}
+               <FilesList deviceId={deviceId}/>
                
               </Grid>
 
