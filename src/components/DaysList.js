@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
-import { mapDatesAndFileNames } from './utils';
+import { List, ListItem, withStyles, ListItemText, Grid, CircularProgress } from '@material-ui/core/';
+// import {fetchAllDaysFolders} from '../reducers/daysFoldersReducer';
+
+// import { mapDatesAndFileNames } from './utils';
 
 const styles = theme => ({
   root: {
@@ -13,7 +15,9 @@ const styles = theme => ({
   },
 });
 
-const DaysList = ({ classes, allDays, setOneDaysFiles, deviceId }) => {
+// allDays, setOneDaysFiles
+
+const DaysList = ({ classes, deviceId, allDaysFolders }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const gmtToLocale = gmtTime => {
@@ -22,27 +26,54 @@ const DaysList = ({ classes, allDays, setOneDaysFiles, deviceId }) => {
 
   const handleListItemClick = (event, index, link) => {
     setSelectedIndex(index);
-    mapDatesAndFileNames(deviceId, link).then(files => setOneDaysFiles(files))
+    // mapDatesAndFileNames(deviceId, link).then(files => setOneDaysFiles(files))
   };
-
-  return (
-    <div className={classes.root}>
-      <List component="nav">
-        {allDays.map((day, idx) => (
-          <ListItem
-            key={idx}
-            button
-            selected={selectedIndex === idx}
-            onClick={event => handleListItemClick(event, idx, day.link)}
-          >
-            <ListItemText primary={gmtToLocale(day)} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
+  
+  if (!allDaysFolders.length) {
+    return (
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        style={{ width: '100vw', height: '100vh' }}
+      >
+        <Grid item>
+          <CircularProgress className={classes.progress} />
+        </Grid>
+      </Grid>
+    );
+  } else {
+    return (
+      <div className={classes.root}>
+        <List component="nav">
+          {allDaysFolders.map((dayFolder, index) => (
+            <ListItem
+              key={dayFolder.id}
+              button
+              selected={selectedIndex === index}
+              onClick={event => handleListItemClick(event, index, dayFolder.link)}
+            >
+              <ListItemText primary={gmtToLocale(dayFolder)} />
+            </ListItem>
+          ))}
+        </List>
+      </div>
+    )
+  }
 };
 
+// const mapDispatchToProps = dispatch=> {
+//   return {
+//     fetchAllDaysFolders: (deviceId) => dispatch(fetchAllDaysFolders(deviceId)),
+//   }
+// }
+
+const mapStateToProps = ({allDaysFolders}) => {
+  return {allDaysFolders}
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(DaysList));
 
 
-export default withStyles(styles)(DaysList);
+
+
