@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import {
   VictoryLine,
   VictoryChart,
@@ -8,7 +9,7 @@ import {
   VictoryAxis,
 } from 'victory';
 
-const EcgGraph = ({ ecgData }) => {
+const EcgGraph = ({deviceId, ecgData }) => {
 
   //State
   const [zoomXDomain, setZoomXDomain] = useState([0, 6000]);
@@ -33,8 +34,10 @@ const EcgGraph = ({ ecgData }) => {
   };
 
   useEffect(() => {
-    setEntireDomain(getEntireDomain(ecgData));
-    setZoomXDomain([ecgData[0].x, ecgData[0].x + 6000]);
+    if(ecgData.length) {
+      setEntireDomain(getEntireDomain(ecgData));
+      setZoomXDomain([ecgData[0].x, ecgData[0].x + 6000]);
+    }
   }, [ecgData]);
 
   return (
@@ -107,4 +110,8 @@ const EcgGraph = ({ ecgData }) => {
   );
 };
 
-export default EcgGraph;
+const mapStateToProps = ({ecgData}) => {
+  return {ecgData}
+}
+
+export default connect(mapStateToProps)(EcgGraph);

@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import {Drawer, List, Divider, ListItem, ListItemText} from '@material-ui/core';
 
+import Spinner from '../Spinner';
+
 const styles = {
   list: {
     width: 250,
@@ -27,21 +29,27 @@ function TemporaryDrawer({ classes, toggleDrawer, open, allDevices }) {
       <Divider />
     </div>
   );
-
-  return (
-    <div>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        <div
-          tabIndex={0}
-          role="button"
-          onClick={toggleDrawer(false)}
-          onKeyDown={toggleDrawer(false)}
-        >
-          {sideList}
-        </div>
-      </Drawer>
-    </div>
-  );
+  
+  if (!allDevices.length) {
+    return (
+      <Spinner/>
+    );
+  } else {
+    return (
+      <div>
+        <Drawer open={open} onClose={toggleDrawer(false)}>
+          <div
+            tabIndex={0}
+            role="button"
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+          >
+            {sideList}
+          </div>
+        </Drawer>
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = ({ allDevices }) => {

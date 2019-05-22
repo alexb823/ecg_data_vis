@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { List, ListItem, withStyles, ListItemText, Grid, CircularProgress } from '@material-ui/core/';
-// import {fetchAllDaysFolders} from '../reducers/daysFoldersReducer';
 import {fetchdFileNamesAndDates} from '../reducers/dataFilesReducer';
+import Spinner from './Spinner';
 
 const styles = theme => ({
   root: {
@@ -19,7 +19,10 @@ const DaysList = ({ classes, deviceId, allDaysFolders, fetchdFileNamesAndDates }
   const [selectedIndex, setSelectedIndex] = useState(0);
   
   useEffect(() => {
-    if (allDaysFolders.length) fetchdFileNamesAndDates(deviceId, allDaysFolders[0].link);
+    if (allDaysFolders.length) {
+      setSelectedIndex(0);
+      fetchdFileNamesAndDates(deviceId, allDaysFolders[0].link);
+    }
   }, [allDaysFolders]);
 
   const gmtToLocale = gmtTime => {
@@ -28,22 +31,12 @@ const DaysList = ({ classes, deviceId, allDaysFolders, fetchdFileNamesAndDates }
 
   const handleListItemClick = (event, index, link) => {
     setSelectedIndex(index);
-    // mapDatesAndFileNames(deviceId, link).then(files => setOneDaysFiles(files))
     fetchdFileNamesAndDates(deviceId, link)
   };
   
   if (!allDaysFolders.length) {
     return (
-      <Grid
-        container
-        justify="center"
-        alignItems="center"
-        style={{ width: '100vw', height: '100vh' }}
-      >
-        <Grid item>
-          <CircularProgress className={classes.progress} />
-        </Grid>
-      </Grid>
+      null
     );
   } else {
     return (
@@ -72,7 +65,6 @@ const mapStateToProps = ({allDaysFolders}) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // fetchAllDaysFolders: (deviceId) => dispatch(fetchAllDaysFolders(deviceId)),
     fetchdFileNamesAndDates: (deviceId, folderName) => dispatch(fetchdFileNamesAndDates(deviceId, folderName))
   }
 }

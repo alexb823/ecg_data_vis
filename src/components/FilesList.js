@@ -26,19 +26,19 @@ const styles = theme => ({
   },
 });
 
+
 const FilesList = ({ classes, deviceId, dataFilesFolders, fetchEcg }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    // setSelectedIndex(0);
-    // if (oneDaysFiles.length && deviceId) {
-    //   fetchEcg(deviceId, oneDaysFiles[0]).then(ecgData => setEcgData(ecgData));
-    // }
+    if (dataFilesFolders.length && deviceId) {
+      setSelectedIndex(0);
+      fetchEcg(deviceId, dataFilesFolders[0]);
+    }
   }, [deviceId, dataFilesFolders]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    // setEcgDataRef(oneDaysFiles[index]);
     fetchEcg(deviceId, dataFilesFolders[index])
   };
   
