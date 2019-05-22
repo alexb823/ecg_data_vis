@@ -11,7 +11,6 @@ const App = ({ getAllDevices }) => {
     getAllDevices();
   }, []);
 
-  console.log('hello');
   return (
     <div>
       <Router>
