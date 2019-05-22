@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import {AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import TemporaryDrawer from './TemporaryDrawer';
 
@@ -17,32 +22,35 @@ const styles = {
   },
 };
 
-function MainAppBar({classes, devices, match}) {
+function MainAppBar({ classes }) {
   const [open, setState] = useState(false);
 
-  const toggleDrawer = (open) => () => {
+  const toggleDrawer = open => () => {
     setState(open);
   };
-  
-  console.log(match)
+
   return (
     <div>
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={toggleDrawer(!open)}>
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            Ecordum
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    </div>
-    <TemporaryDrawer devices={devices} toggleDrawer={toggleDrawer} open={open}/>
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton
+              className={classes.menuButton}
+              color="inherit"
+              aria-label="Menu"
+              onClick={toggleDrawer(!open)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" className={classes.grow}>
+              Ecordum
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </div>
+      <TemporaryDrawer toggleDrawer={toggleDrawer} open={open} />
     </div>
   );
 }
-
 
 export default withStyles(styles)(MainAppBar);

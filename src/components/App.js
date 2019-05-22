@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import MainAppBar from './Navbar/MainAppBar';
-import {fetchFolderNames} from './utils';
+import { getAllDevices } from '../reducers/devicesReducer';
 import Dashboard from './Dashboard';
-import Home from './Home';
 
-const App = () => {
-  const [devices, setDevices] = useState([]);
-  
-  useEffect(()=> {
-    fetchFolderNames().then(devices => setDevices(devices))
+const App = ({ getAllDevices }) => {
+
+  useEffect(() => {
+    getAllDevices();
   }, []);
-  
-  console.log('hello')
+
   return (
     <div>
-    <Router>
-    <MainAppBar devices={devices}/>
-    <Route path='/:deviceId' exact component={Dashboard} />
-    </Router>
+      <Router>
+        <MainAppBar />
+        <Route path="/:deviceId" exact component={Dashboard} />
+      </Router>
     </div>
-    )
+  );
 };
 
-export default App;
+const mapDispatchToProps = dispatch => {
+  return {
+    getAllDevices: () => dispatch(getAllDevices()),
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(App);
