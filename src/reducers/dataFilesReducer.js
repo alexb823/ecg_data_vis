@@ -49,7 +49,7 @@ const fetchDataFile = (deviceId, folderName) => {
 // append to the base url baseUrl/:deviseId/:folderName/:fileName
 // This combined url used to get the file, and date modified (date also needed for the graph)
 // folder name is the 8 digit number with the year and date (ex: 20190519)
-export const fetchdFileNamesAndDates = (deviceId, folderName) => {
+export const fetchFileNamesAndDates = (deviceId, folderName) => {
   return dispatch => {
     return Promise.all([
       fetchDataFile(deviceId, folderName),
@@ -57,14 +57,31 @@ export const fetchdFileNamesAndDates = (deviceId, folderName) => {
     ])
       .then(([filesArr, dateModArr]) =>
         filesArr.reduce((acc, fileName, index) => {
-          const strArr = fileName.split('.').join('_').split('_');
+          const strArr = fileName
+            .split('.')
+            .join('_')
+            .split('_');
           const filesKey = `${strArr[0]}_${strArr[1]}_${deviceId}`; //key is date_time_deviseId)
           const modDate = dateModArr[index];
           const utc = Date.parse(modDate);
           if (acc[filesKey]) {
-            acc[filesKey].push({ name: filesArr[index], modDate, utc, linkEx: strArr[0], filesKey });
+            acc[filesKey].push({
+              name: filesArr[index],
+              modDate,
+              utc,
+              linkEx: strArr[0],
+              filesKey,
+            });
           } else {
-            acc[filesKey] = [{ name: filesArr[index], modDate, utc, linkEx: strArr[0], filesKey }];
+            acc[filesKey] = [
+              {
+                name: filesArr[index],
+                modDate,
+                utc,
+                linkEx: strArr[0],
+                filesKey,
+              },
+            ];
           }
           return acc;
         }, {})
@@ -74,6 +91,6 @@ export const fetchdFileNamesAndDates = (deviceId, folderName) => {
           return files[key];
         });
       })
-      .then(dataFilesFolders => dispatch(gotAllFileNames(dataFilesFolders)))
-    }
+      .then(dataFilesFolders => dispatch(gotAllFileNames(dataFilesFolders)));
+  };
 };

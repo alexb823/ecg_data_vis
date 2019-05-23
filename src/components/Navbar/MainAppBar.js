@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-} from '@material-ui/core';
+import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import TemporaryDrawer from './TemporaryDrawer';
 
