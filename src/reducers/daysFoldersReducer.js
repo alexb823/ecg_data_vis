@@ -53,7 +53,11 @@ export const fetchAllDaysFolders = deviceId => {
     ])
       .then(([folderNamesArr, dateModArr]) =>
         folderNamesArr.map((folderName, index) => {
-          return { link: folderName, modDate: dateModArr[index], id: `${deviceId}_${folderName}` };
+          return {
+            link: folderName,
+            modDate: dateModArr[index],
+            id: `${deviceId}_${folderName}`,
+          };
         })
       )
       .then(daysFolders => dispatch(gotAllDaysFolders(daysFolders)));

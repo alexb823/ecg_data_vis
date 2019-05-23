@@ -6,7 +6,6 @@ import { getAllDevices } from '../reducers/devicesReducer';
 import Dashboard from './Dashboard';
 
 const App = ({ getAllDevices }) => {
-
   useEffect(() => {
     getAllDevices();
   }, []);

@@ -1,4 +1,3 @@
-import axios from 'axios';
 const parser = new DOMParser();
 // const baseUrl = '/wxapp2/ecgdata/liveecg/5C0347004129';
 export const baseUrl = '/wxapp2/ecgdata/liveecg';
@@ -30,7 +29,6 @@ export const parseListOfFiles = str => {
   return Array.from(nodeList).map(tt => tt.innerText);
 };
 
-
 // parse the _smoothECG.txt file into an array of Int
 // some files have 2 columns of text
 export const parseSmoothECG = str => {
@@ -42,9 +40,9 @@ export const parseSmoothECG = str => {
     .split('\n')
     .reduce((acc, str) => {
       if (str.includes(' \t')) {
-        acc.push(parseInt(str.split(' \t')[1]))
+        acc.push(parseInt(str.split(' \t')[1]));
       } else {
-        acc.push(parseInt(str))
+        acc.push(parseInt(str));
       }
       return acc;
     }, []);

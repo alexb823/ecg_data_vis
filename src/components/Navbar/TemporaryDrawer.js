@@ -3,7 +3,13 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
-import {Drawer, List, Divider, ListItem, ListItemText} from '@material-ui/core';
+import {
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemText,
+} from '@material-ui/core';
 
 import Spinner from '../Spinner';
 
@@ -29,11 +35,9 @@ function TemporaryDrawer({ classes, toggleDrawer, open, allDevices }) {
       <Divider />
     </div>
   );
-  
+
   if (!allDevices.length) {
-    return (
-      <Spinner/>
-    );
+    return <Spinner />;
   } else {
     return (
       <div>

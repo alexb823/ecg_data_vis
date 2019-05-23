@@ -9,8 +9,7 @@ import {
   VictoryAxis,
 } from 'victory';
 
-const EcgGraph = ({deviceId, ecgData }) => {
-
+const EcgGraph = ({ deviceId, ecgData }) => {
   //State
   const [zoomXDomain, setZoomXDomain] = useState([0, 6000]);
   const [entireDomain, setEntireDomain] = useState({});
@@ -34,7 +33,7 @@ const EcgGraph = ({deviceId, ecgData }) => {
   };
 
   useEffect(() => {
-    if(ecgData.length) {
+    if (ecgData.length) {
       setEntireDomain(getEntireDomain(ecgData));
       setZoomXDomain([ecgData[0].x, ecgData[0].x + 6000]);
     }
@@ -46,7 +45,7 @@ const EcgGraph = ({deviceId, ecgData }) => {
         theme={VictoryTheme.material}
         domain={entireDomain}
         width={734}
-        height={400}
+        height={394}
         scale={{ x: 'time' }}
         containerComponent={
           <VictoryZoomContainer
@@ -97,7 +96,7 @@ const EcgGraph = ({deviceId, ecgData }) => {
           />
         }
       >
-        <VictoryAxis offsetY={30} style={{ grid: { stroke: 'none' } }}/>
+        <VictoryAxis offsetY={30} style={{ grid: { stroke: 'none' } }} />
         <VictoryLine
           style={{
             data: { stroke: 'tomato', strokeWidth: '1px' },
@@ -110,8 +109,8 @@ const EcgGraph = ({deviceId, ecgData }) => {
   );
 };
 
-const mapStateToProps = ({ecgData}) => {
-  return {ecgData}
-}
+const mapStateToProps = ({ ecgData }) => {
+  return { ecgData };
+};
 
 export default connect(mapStateToProps)(EcgGraph);

@@ -26,7 +26,6 @@ const styles = theme => ({
   },
 });
 
-
 const FilesList = ({ classes, deviceId, dataFilesFolders, fetchEcg }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -39,48 +38,47 @@ const FilesList = ({ classes, deviceId, dataFilesFolders, fetchEcg }) => {
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    fetchEcg(deviceId, dataFilesFolders[index])
+    fetchEcg(deviceId, dataFilesFolders[index]);
   };
-  
+
   if (!dataFilesFolders.length) {
     return null;
   } else {
-      return (
-    <Paper className={classes.paper}>
-      <div className={classes.root}>
-        <List component="nav">
-          {dataFilesFolders.map((fileArr, idx) => (
-            <ListItem
-              key={fileArr[0].filesKey}
-              button
-              selected={selectedIndex === idx}
-              onClick={event => handleListItemClick(event, idx)}
-            >
-              <ListItemText
-                primary={new Date(fileArr[0].modDate).toLocaleString()}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </div>
-    </Paper>
-  );
+    return (
+      <Paper className={classes.paper}>
+        <div className={classes.root}>
+          <List component="nav">
+            {dataFilesFolders.map((fileArr, idx) => (
+              <ListItem
+                key={fileArr[0].filesKey}
+                button
+                selected={selectedIndex === idx}
+                onClick={event => handleListItemClick(event, idx)}
+              >
+                <ListItemText
+                  primary={new Date(fileArr[0].modDate).toLocaleString()}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </div>
+      </Paper>
+    );
   }
-
-
 };
 
-const mapStateToProps = ({dataFilesFolders}) => {
-  return {dataFilesFolders}
+const mapStateToProps = ({ dataFilesFolders }) => {
+  return { dataFilesFolders };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchEcg: (deviceId, dataFilesArr) => dispatch(fetchEcg(deviceId, dataFilesArr)),
-  }
-}
+    fetchEcg: (deviceId, dataFilesArr) =>
+      dispatch(fetchEcg(deviceId, dataFilesArr)),
+  };
+};
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(FilesList));
-
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(FilesList));
