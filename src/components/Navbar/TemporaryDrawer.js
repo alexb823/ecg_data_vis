@@ -22,11 +22,11 @@ const styles = {
   },
 };
 
-function TemporaryDrawer({ classes, toggleDrawer, open, allDevices }) {
+function TemporaryDrawer({ classes, toggleDrawer, open, status, deviceList }) {
   const sideList = (
     <div className={classes.list}>
       <List>
-        {allDevices.map((deviceId, index) => (
+        {deviceList.map((deviceId, index) => (
           <ListItem key={deviceId} button component={Link} to={`/${deviceId}`}>
             <ListItemText primary={deviceId} />
           </ListItem>
@@ -36,7 +36,7 @@ function TemporaryDrawer({ classes, toggleDrawer, open, allDevices }) {
     </div>
   );
 
-  if (!allDevices.length) {
+  if (status === 'fetching') {
     return <Spinner />;
   } else {
     return (
@@ -56,8 +56,8 @@ function TemporaryDrawer({ classes, toggleDrawer, open, allDevices }) {
   }
 }
 
-const mapStateToProps = ({ allDevices }) => {
-  return { allDevices };
+const mapStateToProps = ({ allDevices: { status, deviceList }}) => {
+  return { status, deviceList };
 };
 
 export default connect(mapStateToProps)(withStyles(styles)(TemporaryDrawer));

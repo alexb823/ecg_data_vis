@@ -10,7 +10,7 @@ const gotAllFileNames = dataFilesFolders => {
   };
 };
 
-export const dataFilesReducer = (state = [], action) => {
+export const dataFilesFolders = (state = [], action) => {
   switch (action.type) {
     case GOT_ALL_FILE_NAMES:
       return action.dataFilesFolders;

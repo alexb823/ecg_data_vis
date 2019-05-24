@@ -21,21 +21,23 @@ const styles = theme => ({
   },
 });
 
+
 const DaysList = ({
   classes,
   deviceId,
-  allDaysFolders,
+  status,
+  allDaysList,
   fetchFileNamesAndDates,
 }) => {
   //which list item is selected
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    if (allDaysFolders.length) {
+    if (allDaysList.length) {
       setSelectedIndex(0);
-      fetchFileNamesAndDates(deviceId, allDaysFolders[0].link);
+      fetchFileNamesAndDates(deviceId, allDaysList[0].link);
     }
-  }, [allDaysFolders]);
+  }, [allDaysList]);
 
   const gmtToLocale = gmtTime => {
     return new Date(gmtTime.modDate).toLocaleString();
@@ -46,13 +48,13 @@ const DaysList = ({
     fetchFileNamesAndDates(deviceId, link);
   };
 
-  if (!allDaysFolders.length) {
-    return null;
+  if (status === 'fetching') {
+    return <Spinner />;
   } else {
     return (
       <div className={classes.root}>
         <List component="nav">
-          {allDaysFolders.map((dayFolder, index) => (
+          {allDaysList.map((dayFolder, index) => (
             <ListItem
               key={dayFolder.id}
               button
@@ -70,8 +72,8 @@ const DaysList = ({
   }
 };
 
-const mapStateToProps = ({ allDaysFolders }) => {
-  return { allDaysFolders };
+const mapStateToProps = ({ allDaysFolders: { status, allDaysList }}) => {
+  return { status, allDaysList };
 };
 
 const mapDispatchToProps = dispatch => {

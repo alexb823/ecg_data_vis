@@ -1,14 +1,16 @@
 import { combineReducers } from 'redux';
-import { devicesReducer } from './devicesReducer';
-import { daysFoldersReducer } from './daysFoldersReducer';
-import { dataFilesReducer } from './dataFilesReducer';
-import {ecgDataReducer} from './ecgDataReducer';
+
+import { allDevices } from './devicesReducer';
+import { allDaysFolders } from './daysFoldersReducer';
+import { dataFilesFolders } from './dataFilesReducer';
+import {ecgData} from './ecgDataReducer';
+
 
 const RootReducer = combineReducers({
-  allDevices: devicesReducer,
-  allDaysFolders: daysFoldersReducer,
-  dataFilesFolders: dataFilesReducer,
-  ecgData: ecgDataReducer,
+  allDevices,
+  allDaysFolders,
+  dataFilesFolders,
+  ecgData,
 });
 
 

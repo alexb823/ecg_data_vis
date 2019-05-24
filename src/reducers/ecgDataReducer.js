@@ -10,7 +10,7 @@ const gotEcgData = ecgData => {
   };
 };
 
-export const ecgDataReducer = (state = [], action) => {
+export const ecgData = (state = [], action) => {
   switch (action.type) {
     case GOT_ECG_DATA:
       return action.ecgData;

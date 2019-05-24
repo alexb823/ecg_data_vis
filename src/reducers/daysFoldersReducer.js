@@ -1,7 +1,25 @@
 import axios from 'axios';
 import { baseUrl, parseListOfLinks, parseModifiedDates } from './utils';
 
+// Action types
+const DAYS_FOLDERS_REQUEST = 'DAYS_FOLDERS_REQUEST';
+const DAYS_FOLDERS_FAILURE = 'DAYS_FOLDERS_FAILURE';
 const GOT_ALL_DAYS_FOLDERS = 'GOT_ALL_DAYS_FOLDERS';
+
+
+// Action creaters
+const daysFoldersRequest = () => {
+  return {
+    type: DAYS_FOLDERS_REQUEST,
+  };
+};
+
+const daysFoldersFailure = error => {
+  return {
+    type: DAYS_FOLDERS_FAILURE,
+    error: []
+  };
+};
 
 const gotAllDaysFolders = daysFolders => {
   return {
@@ -10,12 +28,16 @@ const gotAllDaysFolders = daysFolders => {
   };
 };
 
-export const daysFoldersReducer = (state = [], action) => {
+// States
+const INITIAL_STATE = { status: 'initial', allDaysList: [] };
+
+// Reducer
+export const allDaysFolders = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case GOT_ALL_DAYS_FOLDERS:
-      return action.daysFolders;
-    default:
-      return state;
+    case DAYS_FOLDERS_REQUEST: return { status: 'fetching', allDaysList: [] };
+    case DAYS_FOLDERS_FAILURE: return { status: 'failed', allDaysList: [] };
+    case GOT_ALL_DAYS_FOLDERS: return { status: 'fetched', allDaysList: action.daysFolders };
+    default: return state;
   }
 };
 
@@ -47,6 +69,8 @@ const fetchFolderNames = deviceId => {
 // Will have folder name to append to the baseUrl, and date modified for the link text
 export const fetchAllDaysFolders = deviceId => {
   return dispatch => {
+    dispatch(daysFoldersRequest());
+    
     return Promise.all([
       fetchFolderNames(deviceId),
       fetchModifiedDates(deviceId),
@@ -60,6 +84,7 @@ export const fetchAllDaysFolders = deviceId => {
           };
         })
       )
-      .then(daysFolders => dispatch(gotAllDaysFolders(daysFolders)));
+      .then(daysFolders => dispatch(gotAllDaysFolders(daysFolders)))
+      .catch(error => dispatch(daysFoldersFailure(error)))
   };
 };
