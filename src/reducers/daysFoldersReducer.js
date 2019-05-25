@@ -36,7 +36,7 @@ export const allDaysFolders = (state = INITIAL_STATE, action) => {
     case DAYS_FOLDERS_REQUEST:
       return { status: 'fetching', daysFolderList: [] };
     case DAYS_FOLDERS_FAILURE:
-      return { status: 'failed', daysFolderList: '' };
+      return { status: 'failed', daysFolderList: action.error };
     case GOT_ALL_DAYS_FOLDERS:
       return { status: 'fetched', daysFolderList: action.daysFolderList };
     default:

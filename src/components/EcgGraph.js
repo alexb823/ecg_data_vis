@@ -10,6 +10,7 @@ import {
 } from 'victory';
 import Spinner from './Spinner';
 
+
 const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
   //State
   const [zoomXDomain, setZoomXDomain] = useState([0, 6000]);

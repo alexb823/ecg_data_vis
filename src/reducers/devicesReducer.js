@@ -36,7 +36,7 @@ export const allDevices = (state = INITIAL_STATE, action) => {
     case DEVICES_REQUEST:
       return { status: 'fetching', deviceList: [] };
     case DEVICES_FAILURE:
-      return { status: 'failed', deviceList: '' };
+      return { status: 'failed', deviceList: action.error };
     case GOT_ALL_DEVICES:
       return { status: 'fetched', deviceList: action.devices };
     default:

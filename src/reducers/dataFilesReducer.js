@@ -36,7 +36,7 @@ export const dataFilesFolders = (state = INITIAL_STATE, action) => {
     case DATA_FILE_FOLDER_REQUEST:
       return { status: 'fetching', dataFileFolderList: [] };
     case DATA_FILE_FOLDER_FAILURE:
-      return { status: 'failed', dataFileFolderList: '' };
+      return { status: 'failed', dataFileFolderList: action.error };
     case GOT_ALL_FILE_FOLDERS:
       return { status: 'fetched', dataFileFolderList: action.dataFileFolderList };
     default:
