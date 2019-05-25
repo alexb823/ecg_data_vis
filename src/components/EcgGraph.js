@@ -42,7 +42,7 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
     }
   }, [ecgDataArr]);
 
-  if (status === 'fetching') {
+  if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
   } else {
     return (
