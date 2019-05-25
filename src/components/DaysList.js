@@ -31,7 +31,7 @@ const DaysList = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    if (daysFolderList.length) {
+    if (daysFolderList.length && status !== 'fetching') {
       setSelectedIndex(0);
       fetchFileNamesAndDates(deviceId, daysFolderList[0].link);
     }

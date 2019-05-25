@@ -37,7 +37,7 @@ const FilesList = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    if (dataFileFolderList.length && deviceId) {
+    if (dataFileFolderList.length && deviceId && status !== 'fetching') {
       setSelectedIndex(0);
       fetchEcg(deviceId, dataFileFolderList[0]);
     }
