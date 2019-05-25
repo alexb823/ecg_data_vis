@@ -57,7 +57,7 @@ export const fetchRhythm = (deviceId, dataFilesArr) => {
     return axios
       .get(`${baseUrl}/${deviceId}/${rhythmFileRef.linkEx}/${rhythmFileRef.name}`)
       .then(response => parseRhythm(response.data))
-      .then(rhythmData => dispatch(gotRhythmData(rhythmData)))
+      // .then(rhythmData => dispatch(gotRhythmData(rhythmData)))
       .catch(error => dispatch(rhythmDataFailure(error)));
   };
 };
