@@ -39,5 +39,8 @@
     "victory": "^32.2.3",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1"
+  },
+  "devDependencies": {
+    "redux-devtools-extension": "^2.13.8"
   }
 }
