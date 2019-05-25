@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Paper, Grid, CircularProgress, Typography } from '@material-ui/core/';
+import React, { useEffect } from 'react';
+import { Paper, Grid, Typography } from '@material-ui/core/';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { fetchAllDaysFolders } from '../reducers/daysFoldersReducer';
@@ -14,8 +14,8 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2,
-    // maxWidth: 768,
     width: 768,
+    height: 474,
     marginTop: 40,
     textAlign: 'center',
     color: theme.palette.text.secondary,

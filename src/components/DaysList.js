@@ -5,8 +5,6 @@ import {
   ListItem,
   withStyles,
   ListItemText,
-  Grid,
-  CircularProgress,
 } from '@material-ui/core/';
 import { fetchFileNamesAndDates } from '../reducers/dataFilesReducer';
 import Spinner from './Spinner';
@@ -26,18 +24,18 @@ const DaysList = ({
   classes,
   deviceId,
   status,
-  allDaysList,
+  daysFolderList,
   fetchFileNamesAndDates,
 }) => {
   //which list item is selected
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    if (allDaysList.length) {
+    if (daysFolderList.length) {
       setSelectedIndex(0);
-      fetchFileNamesAndDates(deviceId, allDaysList[0].link);
+      fetchFileNamesAndDates(deviceId, daysFolderList[0].link);
     }
-  }, [allDaysList]);
+  }, [daysFolderList]);
 
   const gmtToLocale = gmtTime => {
     return new Date(gmtTime.modDate).toLocaleString();
@@ -54,7 +52,7 @@ const DaysList = ({
     return (
       <div className={classes.root}>
         <List component="nav">
-          {allDaysList.map((dayFolder, index) => (
+          {daysFolderList.map((dayFolder, index) => (
             <ListItem
               key={dayFolder.id}
               button
@@ -72,8 +70,8 @@ const DaysList = ({
   }
 };
 
-const mapStateToProps = ({ allDaysFolders: { status, allDaysList }}) => {
-  return { status, allDaysList };
+const mapStateToProps = ({ allDaysFolders: { status, daysFolderList }}) => {
+  return { status, daysFolderList };
 };
 
 const mapDispatchToProps = dispatch => {

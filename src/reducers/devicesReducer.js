@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { baseUrl, parseListOfLinks } from './utils';
 
-// Action types
+// // Action types
 const DEVICES_REQUEST = 'DEVICES_REQUEST';
 const DEVICES_FAILURE = 'DEVICES_FAILURE';
 const GOT_ALL_DEVICES = 'GOT_ALL_DEVICES';
 
-// Action creaters
+// // Action creators
 const devicesRequest = () => {
   return {
     type: DEVICES_REQUEST,
@@ -16,7 +16,7 @@ const devicesRequest = () => {
 const devicesFailure = error => {
   return {
     type: DEVICES_FAILURE,
-    error: [error]
+    error,
   };
 };
 
@@ -27,20 +27,24 @@ const gotAllDevices = devices => {
   };
 };
 
-// States
+// // State
 const INITIAL_STATE = { status: 'initial', deviceList: [] };
 
-// Reducer
+// // Reducer
 export const allDevices = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case DEVICES_REQUEST: return { status: 'fetching', deviceList: [] };
-    case DEVICES_FAILURE: return { status: 'failed', deviceList: [] };
-    case GOT_ALL_DEVICES: return { status: 'fetched', deviceList: action.devices };
-    default: return state;
+    case DEVICES_REQUEST:
+      return { status: 'fetching', deviceList: [] };
+    case DEVICES_FAILURE:
+      return { status: 'failed', deviceList: '' };
+    case GOT_ALL_DEVICES:
+      return { status: 'fetched', deviceList: action.devices };
+    default:
+      return state;
   }
 };
 
-// Thunks
+// // Thunks
 // gets all the device IDs
 export const getAllDevices = () => {
   return dispatch => {

@@ -1,13 +1,12 @@
 import axios from 'axios';
 import { baseUrl, parseListOfLinks, parseModifiedDates } from './utils';
 
-// Action types
+// // Action types
 const DAYS_FOLDERS_REQUEST = 'DAYS_FOLDERS_REQUEST';
 const DAYS_FOLDERS_FAILURE = 'DAYS_FOLDERS_FAILURE';
 const GOT_ALL_DAYS_FOLDERS = 'GOT_ALL_DAYS_FOLDERS';
 
-
-// Action creaters
+// // Action creators
 const daysFoldersRequest = () => {
   return {
     type: DAYS_FOLDERS_REQUEST,
@@ -17,31 +16,35 @@ const daysFoldersRequest = () => {
 const daysFoldersFailure = error => {
   return {
     type: DAYS_FOLDERS_FAILURE,
-    error: []
+    error,
   };
 };
 
-const gotAllDaysFolders = daysFolders => {
+const gotAllDaysFolders = daysFolderList => {
   return {
     type: GOT_ALL_DAYS_FOLDERS,
-    daysFolders,
+    daysFolderList,
   };
 };
 
-// States
-const INITIAL_STATE = { status: 'initial', allDaysList: [] };
+// // State
+const INITIAL_STATE = { status: 'initial', daysFolderList: [] };
 
-// Reducer
+// // Reducer
 export const allDaysFolders = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case DAYS_FOLDERS_REQUEST: return { status: 'fetching', allDaysList: [] };
-    case DAYS_FOLDERS_FAILURE: return { status: 'failed', allDaysList: [] };
-    case GOT_ALL_DAYS_FOLDERS: return { status: 'fetched', allDaysList: action.daysFolders };
-    default: return state;
+    case DAYS_FOLDERS_REQUEST:
+      return { status: 'fetching', daysFolderList: [] };
+    case DAYS_FOLDERS_FAILURE:
+      return { status: 'failed', daysFolderList: '' };
+    case GOT_ALL_DAYS_FOLDERS:
+      return { status: 'fetched', daysFolderList: action.daysFolderList };
+    default:
+      return state;
   }
 };
 
-// Thunks
+// // Thunks
 
 // helper
 // Fetch the folder modified GMT dates for the device at /wxapp2/ecgdata/liveecg/:deviceId
@@ -70,7 +73,7 @@ const fetchFolderNames = deviceId => {
 export const fetchAllDaysFolders = deviceId => {
   return dispatch => {
     dispatch(daysFoldersRequest());
-    
+
     return Promise.all([
       fetchFolderNames(deviceId),
       fetchModifiedDates(deviceId),
@@ -85,6 +88,6 @@ export const fetchAllDaysFolders = deviceId => {
         })
       )
       .then(daysFolders => dispatch(gotAllDaysFolders(daysFolders)))
-      .catch(error => dispatch(daysFoldersFailure(error)))
+      .catch(error => dispatch(daysFoldersFailure(error)));
   };
 };

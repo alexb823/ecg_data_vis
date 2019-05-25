@@ -25,38 +25,42 @@ const styles = {
 function TemporaryDrawer({ classes, toggleDrawer, open, status, deviceList }) {
   const sideList = (
     <div className={classes.list}>
-      <List>
-        {deviceList.map((deviceId, index) => (
-          <ListItem key={deviceId} button component={Link} to={`/${deviceId}`}>
-            <ListItemText primary={deviceId} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
+      {status === 'fetching' ? (
+        <Spinner />
+      ) : (
+        <List>
+          {deviceList.map(deviceId => (
+            <ListItem
+              key={deviceId}
+              button
+              component={Link}
+              to={`/${deviceId}`}
+            >
+              <ListItemText primary={deviceId} />
+            </ListItem>
+          ))}
+        </List>
+      )}
     </div>
   );
 
-  if (status === 'fetching') {
-    return <Spinner />;
-  } else {
-    return (
-      <div>
-        <Drawer open={open} onClose={toggleDrawer(false)}>
-          <div
-            tabIndex={0}
-            role="button"
-            onClick={toggleDrawer(false)}
-            onKeyDown={toggleDrawer(false)}
-          >
-            {sideList}
-          </div>
-        </Drawer>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <Drawer open={open} onClose={toggleDrawer(false)}>
+        <div
+          tabIndex={0}
+          role="button"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          {sideList}
+        </div>
+      </Drawer>
+    </div>
+  );
 }
 
-const mapStateToProps = ({ allDevices: { status, deviceList }}) => {
+const mapStateToProps = ({ allDevices: { status, deviceList } }) => {
   return { status, deviceList };
 };
 
