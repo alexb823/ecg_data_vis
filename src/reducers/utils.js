@@ -1,7 +1,7 @@
 const domParser = new DOMParser();
 import axios from 'axios';
 
-const fullUrl = '/wxapp2/ecgdata/liveecg/5C0347004129/20190523/20190523_211913_5C0347004129_rhythm.xml';
+// const fullUrl = '/wxapp2/ecgdata/liveecg/5C0347004129/20190523/20190523_211913_5C0347004129_rhythm.xml';
 export const baseUrl = '/wxapp2/ecgdata/liveecg';
 
 // Parse list of devise ids from the html at /wxapp2/ecgdata/liveecg
