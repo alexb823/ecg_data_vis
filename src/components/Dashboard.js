@@ -3,6 +3,7 @@ import { Paper, Grid, Typography } from '@material-ui/core/';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { fetchAllDaysFolders } from '../reducers/daysFoldersReducer';
+import {printXml} from '../reducers/utils';
 
 import DaysList from './DaysList';
 import EcgGraph from './EcgGraph';
@@ -33,6 +34,7 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
 
   useEffect(() => {
     fetchAllDaysFolders(deviceId);
+    printXml();
   }, [match.params.deviceId]);
 
   return (
