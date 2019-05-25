@@ -6,6 +6,7 @@ import {
   withStyles,
   ListItemText,
   Paper,
+  Typography,
 } from '@material-ui/core/';
 import Spinner from './Spinner';
 import { fetchEcg } from '../reducers/ecgDataReducer';
@@ -14,17 +15,22 @@ import { fetchRhythm } from '../reducers/rhythmDataReducer';
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
+    // maxWidth: 360,
+    maxHeight: 260,
     overflow: 'auto',
-    maxHeight: '100vh',
+    // maxHeight: '100vh',
     backgroundColor: theme.palette.background.paper,
   },
   paper: {
     // padding: theme.spacing.unit * 2,
     // marginTop: 10,
-    maxWidth: 360,
+    // maxWidth: 360,
     // textAlign: 'center',
+    height: 320,
     color: theme.palette.text.secondary,
+  },
+  title: {
+    color: theme.palette.text.primary,
   },
 });
 
@@ -63,8 +69,10 @@ const FilesList = ({
   } else {
     return (
       <Paper className={classes.paper}>
-        <div className={classes.root}>
-          <List component="nav">
+        <Typography variant="h6" className={classes.title}>
+            Reports
+          </Typography>
+          <List component="nav" className={classes.root}>
             {dataFileFolderList.map((fileArr, idx) => (
               <ListItem
                 key={fileArr[0].filesKey}
@@ -78,7 +86,6 @@ const FilesList = ({
               </ListItem>
             ))}
           </List>
-        </div>
       </Paper>
     );
   }

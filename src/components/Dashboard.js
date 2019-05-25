@@ -7,6 +7,7 @@ import { fetchAllDaysFolders } from '../reducers/daysFoldersReducer';
 import DaysList from './DaysList';
 import EcgGraph from './EcgGraph';
 import FilesList from './FilesList';
+import CardiacRhythm from './CardiacRhythm';
 
 const styles = theme => ({
   root: {
@@ -14,10 +15,10 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2,
-    width: 768,
-    height: 474,
+    // width: 'auto',
+    height: 514,
     marginTop: 20,
-    textAlign: 'center',
+    textAlign: 'left',
     color: theme.palette.text.secondary,
     backgroundImage: `url(${'Grid_sm.svg'})`,
     backgroundSize: '21px 21px',
@@ -49,11 +50,11 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
         </Grid>
 
         <Grid item xs={12} md={9} align="center">
-          <Typography variant="h6" gutterBottom style={{ marginTop: '20px' }}>
-            {deviceId}
-          </Typography>
           <Paper className={classes.paper}>
+          <Typography variant="h6"> {deviceId}</Typography>
+          <Grid container justify="center" alignItems="center">
             <EcgGraph deviceId={deviceId} />
+            </Grid>
           </Paper>
 
           <Grid
@@ -64,12 +65,13 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
             spacing={24}
             style={{ marginTop: '20px' }}
           >
-            <Grid item xs={12} md={4} align="left">
+            <Grid item xs={12} md={5} align="center">
               <FilesList deviceId={deviceId} />
             </Grid>
 
-            {/* <Grid item xs={12} md={5} align="left">
-            </Grid> */}
+            <Grid item xs={12} md={7} align="center">
+              <CardiacRhythm deviseId={deviceId}/>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

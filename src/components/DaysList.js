@@ -9,7 +9,7 @@ const styles = theme => ({
     width: '100%',
     // maxWidth: 360,
     overflow: 'auto',
-    maxHeight: '100vh',
+    maxHeight: 950,
     backgroundColor: theme.palette.background.paper,
   },
 });
