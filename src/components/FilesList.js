@@ -48,8 +48,10 @@ const FilesList = ({
     fetchEcg(deviceId, dataFileFolderList[index]);
   };
 
-  if (status === 'fetching') {
+  if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
+  } else if (!dataFileFolderList.length) {
+    return null;
   } else {
     return (
       <Paper className={classes.paper}>

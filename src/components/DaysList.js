@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import {
-  List,
-  ListItem,
-  withStyles,
-  ListItemText,
-} from '@material-ui/core/';
+import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
 import { fetchFileNamesAndDates } from '../reducers/dataFilesReducer';
 import Spinner from './Spinner';
 
@@ -18,7 +13,6 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
   },
 });
-
 
 const DaysList = ({
   classes,
@@ -46,8 +40,10 @@ const DaysList = ({
     fetchFileNamesAndDates(deviceId, link);
   };
 
-  if (status === 'fetching') {
+  if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
+  } else if (!daysFolderList.length) {
+    return null;
   } else {
     return (
       <div className={classes.root}>
@@ -70,7 +66,7 @@ const DaysList = ({
   }
 };
 
-const mapStateToProps = ({ allDaysFolders: { status, daysFolderList }}) => {
+const mapStateToProps = ({ allDaysFolders: { status, daysFolderList } }) => {
   return { status, daysFolderList };
 };
 
