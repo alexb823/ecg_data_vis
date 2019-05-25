@@ -41,7 +41,10 @@ const FilesList = ({
   useEffect(() => {
     if (dataFileFolderList.length && deviceId && status !== 'fetching') {
       setSelectedIndex(0);
-      fetchEcg(deviceId, dataFileFolderList[0]);
+      Promise.all([
+        fetchEcg(deviceId, dataFileFolderList[0]),
+        fetchRhythm(deviceId, dataFileFolderList[0]),
+      ]);
     }
   }, [dataFileFolderList]);
 
