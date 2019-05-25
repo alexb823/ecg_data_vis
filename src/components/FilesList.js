@@ -7,6 +7,7 @@ import {
   ListItemText,
   Paper,
 } from '@material-ui/core/';
+import Spinner from './Spinner';
 import { fetchEcg } from '../reducers/ecgDataReducer';
 
 const styles = theme => ({
@@ -19,36 +20,42 @@ const styles = theme => ({
   },
   paper: {
     // padding: theme.spacing.unit * 2,
-    marginTop: 20,
+    // marginTop: 10,
     maxWidth: 360,
     // textAlign: 'center',
     color: theme.palette.text.secondary,
   },
 });
 
-const FilesList = ({ classes, deviceId, dataFilesFolders, fetchEcg }) => {
+const FilesList = ({
+  classes,
+  deviceId,
+  status,
+  dataFileFolderList,
+  fetchEcg,
+}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
-    if (dataFilesFolders.length && deviceId) {
+    if (dataFileFolderList.length && deviceId && status !== 'fetching') {
       setSelectedIndex(0);
-      fetchEcg(deviceId, dataFilesFolders[0]);
+      fetchEcg(deviceId, dataFileFolderList[0]);
     }
-  }, [deviceId, dataFilesFolders]);
+  }, [dataFileFolderList]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    fetchEcg(deviceId, dataFilesFolders[index]);
+    fetchEcg(deviceId, dataFileFolderList[index]);
   };
 
-  if (!dataFilesFolders.length) {
-    return null;
+  if (status === 'fetching') {
+    return <Spinner />;
   } else {
     return (
       <Paper className={classes.paper}>
         <div className={classes.root}>
           <List component="nav">
-            {dataFilesFolders.map((fileArr, idx) => (
+            {dataFileFolderList.map((fileArr, idx) => (
               <ListItem
                 key={fileArr[0].filesKey}
                 button
@@ -67,8 +74,10 @@ const FilesList = ({ classes, deviceId, dataFilesFolders, fetchEcg }) => {
   }
 };
 
-const mapStateToProps = ({ dataFilesFolders }) => {
-  return { dataFilesFolders };
+const mapStateToProps = ({
+  dataFilesFolders: { status, dataFileFolderList },
+}) => {
+  return { status, dataFileFolderList };
 };
 
 const mapDispatchToProps = dispatch => {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Paper, Grid, CircularProgress, Typography } from '@material-ui/core/';
+import React, { useEffect } from 'react';
+import { Paper, Grid, Typography } from '@material-ui/core/';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { fetchAllDaysFolders } from '../reducers/daysFoldersReducer';
@@ -14,9 +14,9 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2,
-    // maxWidth: 768,
     width: 768,
-    marginTop: 40,
+    height: 474,
+    marginTop: 20,
     textAlign: 'center',
     color: theme.palette.text.secondary,
     backgroundImage: `url(${'Grid_sm.svg'})`,
@@ -49,7 +49,7 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
         </Grid>
 
         <Grid item xs={12} md={9} align="center">
-          <Typography variant="h5" gutterBottom style={{ marginTop: '30px' }}>
+          <Typography variant="h6" gutterBottom style={{ marginTop: '20px' }}>
             {deviceId}
           </Typography>
           <Paper className={classes.paper}>

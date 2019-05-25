@@ -1,35 +1,60 @@
 import axios from 'axios';
 import { baseUrl, parseSmoothECG } from './utils';
 
+// // Action types
+const ECG_DATA_REQUEST = 'ECG_DATA_REQUEST';
+const ECG_DATA_FAILURE = 'ECG_DATA_FAILURE';
 const GOT_ECG_DATA = 'GOT_ECG_DATA';
 
-const gotEcgData = ecgData => {
+// // Action creators
+const ecgDataRequest = () => {
   return {
-    type: GOT_ECG_DATA,
-    ecgData,
+    type: ECG_DATA_REQUEST,
   };
 };
 
-export const ecgDataReducer = (state = [], action) => {
+const ecgDataFailure = error => {
+  return {
+    type: ECG_DATA_FAILURE,
+    error,
+  };
+};
+
+const gotEcgData = ecgDataArr => {
+  return {
+    type: GOT_ECG_DATA,
+    ecgDataArr,
+  };
+};
+
+// // State
+const INITIAL_STATE = { status: 'initial', ecgDataArr: [] };
+
+// // Reducer
+export const ecgData = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case ECG_DATA_REQUEST:
+      return { status: 'fetching', ecgDataArr: [] };
+    case ECG_DATA_FAILURE:
+      return { status: 'failed', ecgDataArr: action.error };
     case GOT_ECG_DATA:
-      return action.ecgData;
+      return { status: 'fetched', ecgDataArr: action.ecgDataArr };
     default:
       return state;
   }
 };
 
-// Thunks
+// // Thunks
 // Get the ecg data txt file and parse the text
 // Map the x & y data points
 // Returns an array of objects with x and y values for the ecg graph
 export const fetchEcg = (deviceId, dataFilesArr) => {
-  let ecgFileRef = dataFilesArr.find(obj =>
-    obj.name.endsWith('_smoothECG.txt')
-  );
-  let timeStamp = Date.parse(ecgFileRef.modDate);
+  const ecgFileRef = dataFilesArr.find(obj => obj.name.endsWith('_smoothECG.txt'));
+  let timeStamp = ecgFileRef.utc;
 
   return dispatch => {
+    dispatch(ecgDataRequest());
+
     return axios
       .get(`${baseUrl}/${deviceId}/${ecgFileRef.linkEx}/${ecgFileRef.name}`)
       .then(response => parseSmoothECG(response.data))
@@ -40,6 +65,7 @@ export const fetchEcg = (deviceId, dataFilesArr) => {
           return dataPoint;
         })
       )
-      .then(ecgData => dispatch(gotEcgData(ecgData)));
+      .then(ecgDataArr => dispatch(gotEcgData(ecgDataArr)))
+      .catch(error => dispatch(ecgDataFailure(error)));
   };
 };
