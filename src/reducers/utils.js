@@ -51,18 +51,12 @@ export const parseSmoothECG = str => {
     }, []);
 };
 
-// // parse the parseRhythm
-// export const parseRhythm = str => {
-//   const xml = domParser
-//     .parseFromString(str, 'text/xml')
-//     // console.log(parser.parse(xml))
-//   return parser.parse(xml)
-// };
 
+
+//Testing fetching rhythm and converting from xml to json
 export const parseRhythm = (xml) => {
   axios.post('/api/xmlToJson', {xml})
-  .then(response => response.data)
-  .then(result => console.log(result.OUTPUT))
+  .then(response => response.data.OUTPUT)
 }
 
 export const fetchRhythmTest = () => {

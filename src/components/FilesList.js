@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core/';
 import Spinner from './Spinner';
 import { fetchEcg } from '../reducers/ecgDataReducer';
+import { fetchRhythm } from '../reducers/rhythmDataReducer';
 
 const styles = theme => ({
   root: {
@@ -33,6 +34,7 @@ const FilesList = ({
   status,
   dataFileFolderList,
   fetchEcg,
+  fetchRhythm,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -45,7 +47,10 @@ const FilesList = ({
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    fetchEcg(deviceId, dataFileFolderList[index]);
+    Promise.all([
+      fetchEcg(deviceId, dataFileFolderList[index]),
+      fetchRhythm(deviceId, dataFileFolderList[index]),
+    ]);
   };
 
   if (status === 'fetching' || status === 'failed') {
@@ -86,6 +91,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchEcg: (deviceId, dataFilesArr) =>
       dispatch(fetchEcg(deviceId, dataFilesArr)),
+    fetchRhythm: (deviceId, dataFilesArr) =>
+      dispatch(fetchRhythm(deviceId, dataFilesArr)),
   };
 };
 
