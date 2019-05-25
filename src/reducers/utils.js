@@ -47,3 +47,21 @@ export const parseSmoothECG = str => {
       return acc;
     }, []);
 };
+
+// parse the parseRhythm
+export const parseRhythm = str => {
+  const ecgNode = parser
+    .parseFromString(str, 'text/xml')
+    .querySelector('body');
+  return ecgNode.innerText
+    .trim()
+    .split('\n')
+    .reduce((acc, str) => {
+      if (str.includes(' \t')) {
+        acc.push(parseInt(str.split(' \t')[1]));
+      } else {
+        acc.push(parseInt(str));
+      }
+      return acc;
+    }, []);
+};

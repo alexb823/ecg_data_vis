@@ -36,7 +36,7 @@ export const ecgData = (state = INITIAL_STATE, action) => {
     case ECG_DATA_REQUEST:
       return { status: 'fetching', ecgDataArr: [] };
     case ECG_DATA_FAILURE:
-      return { status: 'failed', ecgDataArr: '' };
+      return { status: 'failed', ecgDataArr: action.error };
     case GOT_ECG_DATA:
       return { status: 'fetched', ecgDataArr: action.ecgDataArr };
     default:
@@ -49,10 +49,8 @@ export const ecgData = (state = INITIAL_STATE, action) => {
 // Map the x & y data points
 // Returns an array of objects with x and y values for the ecg graph
 export const fetchEcg = (deviceId, dataFilesArr) => {
-  let ecgFileRef = dataFilesArr.find(obj =>
-    obj.name.endsWith('_smoothECG.txt')
-  );
-  let timeStamp = Date.parse(ecgFileRef.modDate);
+  const ecgFileRef = dataFilesArr.find(obj => obj.name.endsWith('_smoothECG.txt'));
+  let timeStamp = ecgFileRef.utc;
 
   return dispatch => {
     dispatch(ecgDataRequest());

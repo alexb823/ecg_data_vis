@@ -20,7 +20,7 @@ const styles = theme => ({
   },
   paper: {
     // padding: theme.spacing.unit * 2,
-    marginTop: 20,
+    // marginTop: 10,
     maxWidth: 360,
     // textAlign: 'center',
     color: theme.palette.text.secondary,
@@ -41,7 +41,7 @@ const FilesList = ({
       setSelectedIndex(0);
       fetchEcg(deviceId, dataFileFolderList[0]);
     }
-  }, [deviceId, dataFileFolderList]);
+  }, [dataFileFolderList]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
