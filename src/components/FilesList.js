@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core/';
 import Spinner from './Spinner';
 import { fetchEcg } from '../reducers/ecgDataReducer';
+import { fetchRhythm } from '../reducers/rhythmDataReducer';
 
 const styles = theme => ({
   root: {
@@ -33,23 +34,32 @@ const FilesList = ({
   status,
   dataFileFolderList,
   fetchEcg,
+  fetchRhythm,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     if (dataFileFolderList.length && deviceId && status !== 'fetching') {
       setSelectedIndex(0);
-      fetchEcg(deviceId, dataFileFolderList[0]);
+      Promise.all([
+        fetchEcg(deviceId, dataFileFolderList[0]),
+        fetchRhythm(deviceId, dataFileFolderList[0]),
+      ]);
     }
   }, [dataFileFolderList]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    fetchEcg(deviceId, dataFileFolderList[index]);
+    Promise.all([
+      fetchEcg(deviceId, dataFileFolderList[index]),
+      fetchRhythm(deviceId, dataFileFolderList[index]),
+    ]);
   };
 
-  if (status === 'fetching') {
+  if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
+  } else if (!dataFileFolderList.length) {
+    return null;
   } else {
     return (
       <Paper className={classes.paper}>
@@ -84,6 +94,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchEcg: (deviceId, dataFilesArr) =>
       dispatch(fetchEcg(deviceId, dataFilesArr)),
+    fetchRhythm: (deviceId, dataFilesArr) =>
+      dispatch(fetchRhythm(deviceId, dataFilesArr)),
   };
 };
 

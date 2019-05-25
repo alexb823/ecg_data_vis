@@ -38,7 +38,8 @@
     "redux-thunk": "^2.3.0",
     "victory": "^32.2.3",
     "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.1"
+    "webpack-cli": "^3.3.1",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "redux-devtools-extension": "^2.13.8"
