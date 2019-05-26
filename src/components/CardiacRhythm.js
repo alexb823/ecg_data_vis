@@ -15,14 +15,14 @@ import { mapRhythmData } from './utils';
 const styles = theme => ({
   root: {
     width: '100%',
-    maxHeight: 260,
+    maxHeight: 270,
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
   },
   paper: {
     // padding: theme.spacing.unit * 2,
     height: 320,
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
   },
   title: {
     color: theme.palette.text.primary,
@@ -55,7 +55,7 @@ const CardiacRhythm = ({ classes, deviceId, status, rhythmList }) => {
                     variant="subtitle1"
                     noWrap
                     className={classes.listText}
-                  >{`${rhythm.eventLocTime}  ${rhythm.descriptionFull}`}</Typography>
+                  >{`${rhythm.eventLocTime} - ${rhythm.descriptionFull}`}</Typography>
                 }
               />
             </ListItem>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
+import { List, ListItem, withStyles, ListItemText, Paper,
+  Typography } from '@material-ui/core/';
 import { fetchFileNamesAndDates } from '../reducers/dataFilesReducer';
 import Spinner from './Spinner';
 
@@ -8,9 +9,16 @@ const styles = theme => ({
   root: {
     width: '100%',
     // maxWidth: 360,
+    maxHeight: 880,
     overflow: 'auto',
-    maxHeight: 950,
     backgroundColor: theme.palette.background.paper,
+  },
+  paper: {
+    height: 898,
+    color: theme.palette.text.primary,
+  },
+  title: {
+    color: theme.palette.text.primary,
   },
 });
 
@@ -31,8 +39,9 @@ const DaysList = ({
     }
   }, [daysFolderList]);
 
-  const gmtToLocale = gmtTime => {
-    return new Date(gmtTime.modDate).toLocaleString();
+  // Helper func to get local time
+  const gmtToLocale = dayFolder => {
+    return new Date(dayFolder.modDate).toLocaleString([], { hour12: false });
   };
 
   const handleListItemClick = (event, index, link) => {
@@ -46,8 +55,8 @@ const DaysList = ({
     return null;
   } else {
     return (
-      <div className={classes.root}>
-        <List component="nav">
+      <Paper className={classes.paper}>
+        <List component="nav" className={classes.root}>
           {daysFolderList.map((dayFolder, index) => (
             <ListItem
               key={dayFolder.id}
@@ -61,7 +70,7 @@ const DaysList = ({
             </ListItem>
           ))}
         </List>
-      </div>
+      </Paper>
     );
   }
 };
