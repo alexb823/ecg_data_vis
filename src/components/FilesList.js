@@ -6,24 +6,31 @@ import {
   withStyles,
   ListItemText,
   Paper,
+  Typography,
 } from '@material-ui/core/';
 import Spinner from './Spinner';
 import { fetchEcg } from '../reducers/ecgDataReducer';
+import { fetchRhythm } from '../reducers/rhythmDataReducer';
 
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
+    // maxWidth: 360,
+    maxHeight: 260,
     overflow: 'auto',
-    maxHeight: '100vh',
+    // maxHeight: '100vh',
     backgroundColor: theme.palette.background.paper,
   },
   paper: {
     // padding: theme.spacing.unit * 2,
     // marginTop: 10,
-    maxWidth: 360,
+    // maxWidth: 360,
     // textAlign: 'center',
+    height: 320,
     color: theme.palette.text.secondary,
+  },
+  title: {
+    color: theme.palette.text.primary,
   },
 });
 
@@ -33,28 +40,39 @@ const FilesList = ({
   status,
   dataFileFolderList,
   fetchEcg,
+  fetchRhythm,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     if (dataFileFolderList.length && deviceId && status !== 'fetching') {
       setSelectedIndex(0);
-      fetchEcg(deviceId, dataFileFolderList[0]);
+      Promise.all([
+        fetchEcg(deviceId, dataFileFolderList[0]),
+        fetchRhythm(deviceId, dataFileFolderList[0]),
+      ]);
     }
   }, [dataFileFolderList]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    fetchEcg(deviceId, dataFileFolderList[index]);
+    Promise.all([
+      fetchEcg(deviceId, dataFileFolderList[index]),
+      fetchRhythm(deviceId, dataFileFolderList[index]),
+    ]);
   };
 
-  if (status === 'fetching') {
+  if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
+  } else if (!dataFileFolderList.length) {
+    return null;
   } else {
     return (
       <Paper className={classes.paper}>
-        <div className={classes.root}>
-          <List component="nav">
+        <Typography variant="h6" className={classes.title}>
+            Reports
+          </Typography>
+          <List component="nav" className={classes.root}>
             {dataFileFolderList.map((fileArr, idx) => (
               <ListItem
                 key={fileArr[0].filesKey}
@@ -68,7 +86,6 @@ const FilesList = ({
               </ListItem>
             ))}
           </List>
-        </div>
       </Paper>
     );
   }
@@ -84,6 +101,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchEcg: (deviceId, dataFilesArr) =>
       dispatch(fetchEcg(deviceId, dataFilesArr)),
+    fetchRhythm: (deviceId, dataFilesArr) =>
+      dispatch(fetchRhythm(deviceId, dataFilesArr)),
   };
 };
 

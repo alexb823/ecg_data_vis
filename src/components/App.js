@@ -13,7 +13,7 @@ const App = ({ getAllDevices }) => {
   return (
     <div>
       <Router>
-        <MainAppBar />
+        <MainAppBar/>
         <Route path="/:deviceId" exact component={Dashboard} />
       </Router>
     </div>
