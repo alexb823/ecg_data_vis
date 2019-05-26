@@ -12,6 +12,7 @@ import CardiacRhythm from './CardiacRhythm';
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    zIndex:  2001,
   },
   paper: {
     padding: theme.spacing.unit * 2,

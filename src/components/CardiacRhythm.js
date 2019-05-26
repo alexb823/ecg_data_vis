@@ -29,34 +29,38 @@ const styles = theme => ({
   },
   listText: {
     textTransform: 'capitalize',
-
-  }
+  },
 });
 
 const CardiacRhythm = ({ classes, deviceId, status, rhythmList }) => {
-
   useEffect(() => {}, [rhythmList]);
+
+  // console.log(rhythmList);
 
   if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
   } else {
     return (
       <Paper className={classes.paper}>
-          <Typography variant="h6" className={classes.title}>
-            Cardiac Rhythm
-          </Typography>
-            <List className={classes.root}>
-              {rhythmList.map(rhythm => (
-                <ListItem key={rhythm.eventUtc + rhythm.descriptionFull}>
-                  <ListItemText className={classes.listText} noWrap
-                    // primary={`${rhythm.eventUtc}  ${rhythm.descriptionFull}`}
-                  >
-                    {rhythm.eventUtc}  {rhythm.descriptionFull}
-                    </ListItemText>
-
-                </ListItem>
-              ))}
-            </List>
+        <Typography variant="h6" className={classes.title}>
+          Cardiac Rhythm
+        </Typography>
+        <List className={classes.root}>
+          {rhythmList.map(rhythm => (
+            <ListItem key={rhythm.eventUtc + rhythm.descriptionFull}>
+              <ListItemText
+                disableTypography
+                primary={
+                  <Typography
+                    variant="subtitle1"
+                    noWrap
+                    className={classes.listText}
+                  >{`${rhythm.eventLocTime}  ${rhythm.descriptionFull}`}</Typography>
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
       </Paper>
     );
   }

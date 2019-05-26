@@ -965,103 +965,116 @@ const rhythmSample = {
   timeStamp: 1555171154000,
 };
 
-
 const rhythmSample2 = {
-  "_comment": "Algorithm Version",
-  "ALGORITHM_VERSION": {
-    "_text": "v.2.0.7"
+  _comment: 'Algorithm Version',
+  ALGORITHM_VERSION: {
+    _text: 'v.2.0.7',
   },
-  "BUCKET": {
-    "_text": "4"
+  BUCKET: {
+    _text: '4',
   },
-  "NOISE": {
-    "_text": "0"
+  NOISE: {
+    _text: '0',
   },
-  "COMPLETE_CONFIDENCE_INDEX": {
-    "_text": "100%"
+  COMPLETE_CONFIDENCE_INDEX: {
+    _text: '100%',
   },
-  "NUMBER_OF_EVENTS": {
-    "_text": "1"
+  NUMBER_OF_EVENTS: {
+    _text: '1',
   },
-  "EVENT": {
-    "EVENT_NUMBER": {
-      "_text": "1"
+  EVENT: {
+    EVENT_NUMBER: {
+      _text: '1',
     },
-    "EVENT_TIME": {
-      "_text": "0:00:00.000"
+    EVENT_TIME: {
+      _text: '0:00:00.000',
     },
-    "SAMPLE_NUMBER": {
-      "_text": "1"
+    SAMPLE_NUMBER: {
+      _text: '1',
     },
-    "DESCRIPTION_FULL": {
-      "_text": "SINUS RHYTHM"
+    DESCRIPTION_FULL: {
+      _text: 'SINUS RHYTHM',
     },
-    "DESCRIPTION_SHORT": {
-      "_text": "NSR"
+    DESCRIPTION_SHORT: {
+      _text: 'NSR',
     },
-    "CONFIDENCE_INDEX": {
-      "_text": "100%"
+    CONFIDENCE_INDEX: {
+      _text: '100%',
     },
-    "CODE": {
-      "_text": "1"
+    CODE: {
+      _text: '1',
     },
-    "N_N_BEATS": {
-      "_text": "211"
+    N_N_BEATS: {
+      _text: '211',
     },
-    "N_V_BEATS": {
-      "_text": "0"
+    N_V_BEATS: {
+      _text: '0',
     },
-    "N_S_BEATS": {
-      "_text": "0"
+    N_S_BEATS: {
+      _text: '0',
     },
-    "N_Q_BEATS": {
-      "_text": "0"
+    N_Q_BEATS: {
+      _text: '0',
     },
-    "DURATION": {
-      "_text": "180.080"
+    DURATION: {
+      _text: '180.080',
     },
-    "N_BEATS": {
-      "_text": "211"
+    N_BEATS: {
+      _text: '211',
     },
-    "MEASUREMENTS": {
-      "HR_AVER": {
-        "_text": "71"
+    MEASUREMENTS: {
+      HR_AVER: {
+        _text: '71',
       },
-      "HR_MAX": {
-        "_text": "78"
+      HR_MAX: {
+        _text: '78',
       },
-      "HR_MIN": {
-        "_text": "54"
+      HR_MIN: {
+        _text: '54',
       },
-      "QRS_AVER": {
-        "_text": "116"
+      QRS_AVER: {
+        _text: '116',
       },
-      "PR_AVER": {
-        "_text": "148"
+      PR_AVER: {
+        _text: '148',
       },
-      "QT_AVER": {
-        "_text": "376"
+      QT_AVER: {
+        _text: '376',
       },
-      "QTc_AVER": {
-        "_text": "408"
+      QTc_AVER: {
+        _text: '408',
       },
-      "QTcF_AVER": {
-        "_text": "397"
+      QTcF_AVER: {
+        _text: '397',
       },
-      "ST_AVER": {
-        "_text": "10"
-      }
-    }
+      ST_AVER: {
+        _text: '10',
+      },
+    },
   },
   timeStamp: 1555171154000,
-}
-
-// Helper function, to calculate the actual event time in UTC
-const calcEventUtc = (timeStamp, eventTimeString) => {
-  const datetime = new Date('1970-01-01T' + '0' + eventTimeString);
-  const mSec = datetime.getMilliseconds();
-  return timeStamp + Date.parse(datetime) + mSec;
 };
+
+// Helper func to calculate time of the Event
+const calcEventUtc = (timeStamp, eventTimeStr) => {
+  const mSec = parseInt(
+    eventTimeStr
+      .split(':')
+      .join('.')
+      .split('.')
+      .join('')
+  );
+  const eventTime = timeStamp + mSec;
+  return eventTime;
+};
+
+// Helper func to convert event time to local time with milliseconds
+const calcLocalTime = (eventUtc, ms) => {
+  const localTime = new Date(eventUtc).toLocaleTimeString([], {hour12: false});
+  const mSec = ('000' + ms).slice(-3);
+  const eventTime =  localTime + '.' + mSec;
+  return eventTime;
+}
 
 // returns an array of event obj with just name and UTC
 export const mapRhythmData = rhythmData => {
@@ -1069,15 +1082,35 @@ export const mapRhythmData = rhythmData => {
 
   if (Array.isArray(rhythmData.EVENT)) {
     events = rhythmData.EVENT.map(event => {
+      const eventUtc = calcEventUtc(
+        rhythmData.timeStamp,
+        event.EVENT_TIME._text
+      );
+      const ms = new Date(eventUtc).getMilliseconds();
+
       return {
-        descriptionFull: event.DESCRIPTION_FULL._text,
-        eventUtc: calcEventUtc(rhythmData.timeStamp, event.EVENT_TIME._text),
+        descriptionFull: event.DESCRIPTION_FULL._text.toLowerCase(),
+        eventTime: event.EVENT_TIME._text,
+        eventLocTime: calcLocalTime(eventUtc, ms),
+        eventUtc,
+        ms,
       };
     });
   } else if (typeof rhythmData.EVENT === 'object') {
+    const eventUtc = calcEventUtc(
+      rhythmData.timeStamp,
+      rhythmData.EVENT.EVENT_TIME._text
+    );
+    const ms = new Date(
+      calcEventUtc(rhythmData.timeStamp, rhythmData.EVENT.EVENT_TIME._text)
+    ).getMilliseconds();
+
     events.push({
-      descriptionFull: rhythmData.EVENT.DESCRIPTION_FULL._text,
-      eventUtc: calcEventUtc(rhythmData.timeStamp, rhythmData.EVENT.EVENT_TIME._text),
+      descriptionFull: rhythmData.EVENT.DESCRIPTION_FULL._text.toLowerCase(),
+      eventTime: rhythmData.EVENT.EVENT_TIME._text,
+      eventLocTime: calcLocalTime(eventUtc, ms),
+      eventUtc,
+      ms,
     });
   }
   return events;

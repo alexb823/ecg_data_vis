@@ -14,13 +14,14 @@ const theme = createMuiTheme({
   palette: {
     primary: blue,
     secondary: red,
-  },
+
+  }
 });
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <Provider store={store}>
-      <App />
+      <App style={{backgroundColor: '#f5f5f5'}}/>
     </Provider>
   </MuiThemeProvider>,
   document.querySelector('#app')
