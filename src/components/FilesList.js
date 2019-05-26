@@ -16,18 +16,15 @@ const styles = theme => ({
   root: {
     width: '100%',
     // maxWidth: 360,
-    maxHeight: 260,
+    maxHeight: 274,
     overflow: 'auto',
-    // maxHeight: '100vh',
     backgroundColor: theme.palette.background.paper,
   },
   paper: {
     // padding: theme.spacing.unit * 2,
-    // marginTop: 10,
-    // maxWidth: 360,
     // textAlign: 'center',
     height: 320,
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
   },
   title: {
     color: theme.palette.text.primary,
@@ -70,22 +67,24 @@ const FilesList = ({
     return (
       <Paper className={classes.paper}>
         <Typography variant="h6" className={classes.title}>
-            Reports
-          </Typography>
-          <List component="nav" className={classes.root}>
-            {dataFileFolderList.map((fileArr, idx) => (
-              <ListItem
-                key={fileArr[0].filesKey}
-                button
-                selected={selectedIndex === idx}
-                onClick={event => handleListItemClick(event, idx)}
-              >
-                <ListItemText
-                  primary={new Date(fileArr[0].modDate).toLocaleString()}
-                />
-              </ListItem>
-            ))}
-          </List>
+          Reports
+        </Typography>
+        <List component="nav" className={classes.root}>
+          {dataFileFolderList.map((fileArr, idx) => (
+            <ListItem
+              key={fileArr[0].filesKey}
+              button
+              selected={selectedIndex === idx}
+              onClick={event => handleListItemClick(event, idx)}
+            >
+              <ListItemText
+                primary={new Date(fileArr[0].modDate).toLocaleString([], {
+                  hour12: false,
+                })}
+              />
+            </ListItem>
+          ))}
+        </List>
       </Paper>
     );
   }

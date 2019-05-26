@@ -12,21 +12,22 @@ import CardiacRhythm from './CardiacRhythm';
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    zIndex:  2001,
+    backgroundColor: '#f5f5f5',
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(3),
+
   },
   paper: {
-    padding: theme.spacing.unit * 2,
-    // width: 'auto',
+    padding: theme.spacing(2),
     height: 514,
-    marginTop: 20,
     textAlign: 'left',
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
     backgroundImage: `url(${'Grid_sm.svg'})`,
     backgroundSize: '21px 21px',
     backgroundRepeat: 'repeat',
   },
   progress: {
-    margin: theme.spacing.unit * 2,
+    margin: theme.spacing(2),
   },
 });
 
@@ -44,7 +45,7 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
         direction="row"
         justify="center"
         alignItems="flex-start"
-        spacing={24}
+        spacing={3}
       >
         <Grid item xs={12} md={3}>
           <DaysList deviceId={deviceId} />
@@ -63,7 +64,7 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
             direction="row"
             justify="center"
             alignItems="flex-start"
-            spacing={24}
+            spacing={3}
             style={{ marginTop: '20px' }}
           >
             <Grid item xs={12} md={5} align="center">
