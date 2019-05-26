@@ -2,6 +2,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const ecgData = require('./routes/ecgData');
+const api = require('./routes/api');
 
 const app = express();
 
@@ -15,6 +16,9 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // Proxy server router
 // Requests starting with /wxapp2/ecgdata/liveecg will proxy to https://paf3.ecordum.cn
 app.use('/wxapp2/ecgdata/liveecg', ecgData);
+
+// API router
+app.use('/api', api);
 
 // For all GET requests that are not to the proxy, will send index.html
 app.get('/*', (req, res, next) => {
