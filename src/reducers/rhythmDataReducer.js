@@ -56,7 +56,10 @@ export const parseRhythm = (xml) => {
 // Returns the rhythm obj for a specific file
 export const fetchRhythm = (deviceId, dataFilesArr) => {
   const rhythmFileRef = dataFilesArr.find(obj => obj.name.endsWith('_rhythm.xml'));
-  const timeStamp = rhythmFileRef.utc;
+  // Taking the timeStamp from ECG file instead of Rhythm file, because the
+  // modified time sometimes has 1sec diff and then events and ecg graph a out of alignment
+  const ecgFileRef = dataFilesArr.find(obj => obj.name.endsWith('_smoothECG.txt'));
+  let timeStamp = ecgFileRef.utc;
 
   return dispatch => {
     dispatch(rhythmDataRequest());

@@ -1056,25 +1056,27 @@ const rhythmSample2 = {
 };
 
 // Helper func to calculate time of the Event
+// Example of EVENT_TIME from xml file 0:02:06.108
 const calcEventUtc = (timeStamp, eventTimeStr) => {
-  const mSec = parseInt(
-    eventTimeStr
-      .split(':')
-      .join('.')
-      .split('.')
-      .join('')
-  );
-  const eventTime = timeStamp + mSec;
+  const timeArr =  eventTimeStr.split(':').join('.').split('.');
+  const onlyMSec = parseInt(timeArr[2]+timeArr[3]);
+  const hrToMs = parseInt(timeArr[0])*60*60*1000;
+  const minToMs = parseInt(timeArr[1])*60*1000;
+  const totalMs = onlyMSec+hrToMs+minToMs;
+  console.log(totalMs);
+  const eventTime = timeStamp + totalMs;
   return eventTime;
 };
 
 // Helper func to convert event time to local time with milliseconds
 const calcLocalTime = (eventUtc, ms) => {
-  const localTime = new Date(eventUtc).toLocaleTimeString([], {hour12: false});
+  const localTime = new Date(eventUtc).toLocaleTimeString([], {
+    hour12: false,
+  });
   const mSec = ('000' + ms).slice(-3);
-  const eventTime =  localTime + '.' + mSec;
+  const eventTime = localTime + '.' + mSec;
   return eventTime;
-}
+};
 
 // returns an array of event obj with just name and UTC
 export const mapRhythmData = rhythmData => {
