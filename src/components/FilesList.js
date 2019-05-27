@@ -16,18 +16,9 @@ const styles = theme => ({
   root: {
     width: '100%',
     // maxWidth: 360,
-    maxHeight: 274,
+    maxHeight: 250,
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
-  },
-  paper: {
-    // padding: theme.spacing.unit * 2,
-    // textAlign: 'center',
-    height: 320,
-    color: theme.palette.text.primary,
-  },
-  title: {
-    color: theme.palette.text.primary,
   },
 });
 
@@ -65,10 +56,6 @@ const FilesList = ({
     return null;
   } else {
     return (
-      <Paper className={classes.paper}>
-        <Typography variant="h6" className={classes.title}>
-          Reports
-        </Typography>
         <List component="nav" className={classes.root}>
           {dataFileFolderList.map((fileArr, idx) => (
             <ListItem
@@ -85,7 +72,6 @@ const FilesList = ({
             </ListItem>
           ))}
         </List>
-      </Paper>
     );
   }
 };

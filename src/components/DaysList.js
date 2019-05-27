@@ -13,10 +13,7 @@ const styles = theme => ({
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
   },
-  paper: {
-    height: 898,
-    color: theme.palette.text.primary,
-  },
+
   title: {
     color: theme.palette.text.primary,
   },
@@ -55,7 +52,6 @@ const DaysList = ({
     return null;
   } else {
     return (
-      <Paper className={classes.paper}>
         <List component="nav" className={classes.root}>
           {daysFolderList.map((dayFolder, index) => (
             <ListItem
@@ -70,7 +66,6 @@ const DaysList = ({
             </ListItem>
           ))}
         </List>
-      </Paper>
     );
   }
 };
