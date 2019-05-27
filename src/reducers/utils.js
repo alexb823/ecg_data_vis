@@ -1,7 +1,7 @@
 const domParser = new DOMParser();
 import axios from 'axios';
 
-const fullUrl = '/wxapp2/ecgdata/liveecg/5C0347004129/20190523/20190523_211913_5C0347004129_rhythm.xml';
+// const fullUrl = '/wxapp2/ecgdata/liveecg/5C0347004129/20190523/20190523_211913_5C0347004129_rhythm.xml';
 // const fullUrl = '/wxapp2/ecgdata/liveecg/5C0347004129/20190211/20190211_074021_5C0347004129_rhythm.xml';
 export const baseUrl = '/wxapp2/ecgdata/liveecg';
 
@@ -53,16 +53,16 @@ export const parseSmoothECG = str => {
 
 
 
-//Testing fetching rhythm and converting from xml to json
-export const parseRhythm = (xml) => {
-  axios.post('/api/xmlToJson', {xml})
-  .then(response => response.data.OUTPUT)
-}
+// //Testing fetching rhythm and converting from xml to json
+// export const parseRhythm = (xml) => {
+//   axios.post('/api/xmlToJson', {xml})
+//   .then(response => response.data.OUTPUT)
+// }
 
-export const fetchRhythmTest = () => {
-    return axios
-      .get(fullUrl)
-      .then(response => parseRhythm(response.data))
-      // .then(response => console.log(response.data))
-      .catch(error => console.log(error));
-  };
+// export const fetchRhythmTest = () => {
+//     return axios
+//       .get(fullUrl)
+//       .then(response => parseRhythm(response.data))
+//       // .then(response => console.log(response.data))
+//       .catch(error => console.log(error));
+//   };

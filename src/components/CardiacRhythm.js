@@ -9,23 +9,14 @@ import {
   Typography,
 } from '@material-ui/core/';
 import Spinner from './Spinner';
-import { fetchRhythm } from '../reducers/rhythmDataReducer';
 import { mapRhythmData } from './utils';
 
 const styles = theme => ({
   root: {
     width: '100%',
-    maxHeight: 270,
+    maxHeight: 250,
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
-  },
-  paper: {
-    // padding: theme.spacing.unit * 2,
-    height: 320,
-    color: theme.palette.text.primary,
-  },
-  title: {
-    color: theme.palette.text.primary,
   },
   listText: {
     textTransform: 'capitalize',
@@ -41,10 +32,6 @@ const CardiacRhythm = ({ classes, deviceId, status, rhythmList }) => {
     return <Spinner />;
   } else {
     return (
-      <Paper className={classes.paper}>
-        <Typography variant="h6" className={classes.title}>
-          Cardiac Rhythm
-        </Typography>
         <List className={classes.root}>
           {rhythmList.map(rhythm => (
             <ListItem key={rhythm.eventUtc + rhythm.descriptionFull}>
@@ -61,7 +48,6 @@ const CardiacRhythm = ({ classes, deviceId, status, rhythmList }) => {
             </ListItem>
           ))}
         </List>
-      </Paper>
     );
   }
 };
@@ -73,13 +59,5 @@ const mapStateToProps = ({ rhythm: { status, rhythmData } }) => {
   };
 };
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     fetchEcg: (deviceId, dataFilesArr) =>
-//       dispatch(fetchEcg(deviceId, dataFilesArr)),
-//     fetchRhythm: (deviceId, dataFilesArr) =>
-//       dispatch(fetchRhythm(deviceId, dataFilesArr)),
-//   };
-// };
 
 export default connect(mapStateToProps)(withStyles(styles)(CardiacRhythm));

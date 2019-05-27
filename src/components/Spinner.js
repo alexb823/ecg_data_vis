@@ -17,7 +17,7 @@ const Spinner = ({ classes }) => {
       className={classes.root}
       container
       justify="center"
-      alignItems="center"
+      // alignItems="center"
       style={{ width: '100%', height: '100%' }}
     >
       <Grid item>
