@@ -16,7 +16,7 @@ const styles = theme => ({
   root: {
     width: '100%',
     // maxWidth: 360,
-    maxHeight: 250,
+    maxHeight: 254,
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
   },

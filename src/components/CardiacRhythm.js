@@ -14,7 +14,7 @@ import { mapRhythmData } from './utils';
 const styles = theme => ({
   root: {
     width: '100%',
-    maxHeight: 250,
+    maxHeight: 254,
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
   },
