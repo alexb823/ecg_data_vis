@@ -10,7 +10,6 @@ import {
 } from 'victory';
 import Spinner from './Spinner';
 
-
 const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
   //State
   const [zoomXDomain, setZoomXDomain] = useState([0, 6000]);
@@ -45,7 +44,7 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
 
   if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
-  }else if (!ecgDataArr.length) {
+  } else if (!ecgDataArr.length) {
     return null;
   } else {
     return (
@@ -71,6 +70,9 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
             style={{
               grid: { stroke: 'none' },
             }}
+            tickFormat={t =>
+              new Date(t).toLocaleTimeString([], { hour12: false })
+            }
           />
           <VictoryAxis
             dependentAxis
@@ -105,7 +107,13 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
             />
           }
         >
-          <VictoryAxis offsetY={30} style={{ grid: { stroke: 'none' } }} />
+          <VictoryAxis
+            offsetY={30}
+            style={{ grid: { stroke: 'none' } }}
+            tickFormat={t =>
+              new Date(t).toLocaleTimeString([], { hour12: false })
+            }
+          />
           <VictoryLine
             style={{
               data: { stroke: 'tomato', strokeWidth: '1px' },
