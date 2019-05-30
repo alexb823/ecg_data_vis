@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { List, ListItem, withStyles, ListItemText, Paper,
-  Typography } from '@material-ui/core/';
+import { List, ListItem, withStyles, ListItemText } from '@material-ui/core/';
 import { fetchFileNamesAndDates } from '../reducers/dataFilesReducer';
 import Spinner from './Spinner';
 
@@ -9,7 +8,7 @@ const styles = theme => ({
   root: {
     width: '100%',
     // maxWidth: 360,
-    maxHeight: 834,
+    maxHeight: 804,
     overflow: 'auto',
     backgroundColor: theme.palette.background.paper,
   },
