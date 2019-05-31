@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { baseUrl, parseSmoothECG } from './utils';
+import { baseUrl, parseSmoothECG, resampleArray } from './utils';
 
 // // Action types
 const ECG_DATA_REQUEST = 'ECG_DATA_REQUEST';
@@ -48,6 +48,7 @@ export const ecgData = (state = INITIAL_STATE, action) => {
 // Get the ecg data txt file and parse the text
 // Map the x & y data points
 // Returns an array of objects with x and y values for the ecg graph
+// Original sample rate is 4ms, but after applying resampleArray its 16ms
 export const fetchEcg = (deviceId, dataFilesArr) => {
   const ecgFileRef = dataFilesArr.find(obj => obj.name.endsWith('_smoothECG.txt'));
   let timeStamp = ecgFileRef.utc;
@@ -58,10 +59,11 @@ export const fetchEcg = (deviceId, dataFilesArr) => {
     return axios
       .get(`${baseUrl}/${deviceId}/${ecgFileRef.linkEx}/${ecgFileRef.name}`)
       .then(response => parseSmoothECG(response.data))
-      .then(ecg =>
-        ecg.map(microvolts => {
+      .then(ecg => resampleArray(ecg, 4))
+      .then(resampledEcg =>
+        resampledEcg.map(microvolts => {
           const dataPoint = { x: timeStamp, y: microvolts };
-          timeStamp += 4;
+          timeStamp += 16;
           return dataPoint;
         })
       )
