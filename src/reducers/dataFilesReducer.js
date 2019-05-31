@@ -13,10 +13,9 @@ const dataFileFolderRequest = () => {
   };
 };
 
-const dataFileFolderFailure = error => {
+const dataFileFolderFailure = () => {
   return {
     type: DATA_FILE_FOLDER_FAILURE,
-    error,
   };
 };
 
@@ -36,7 +35,7 @@ export const dataFilesFolders = (state = INITIAL_STATE, action) => {
     case DATA_FILE_FOLDER_REQUEST:
       return { status: 'fetching', dataFileFolderList: [] };
     case DATA_FILE_FOLDER_FAILURE:
-      return { status: 'failed', dataFileFolderList: action.error };
+      return { status: 'failed', dataFileFolderList: [] };
     case GOT_ALL_FILE_FOLDERS:
       return { status: 'fetched', dataFileFolderList: action.dataFileFolderList };
     default:
@@ -45,7 +44,7 @@ export const dataFilesFolders = (state = INITIAL_STATE, action) => {
 };
 
 // // Thunks
-// helper
+// helper func
 // Fetch file modified GMT dates at /wxapp2/ecgdata/liveecg/:deviceId/:folderName
 // and parse the mod date as we filter for only unique date values
 const fetchModifiedDates = (deviceId, folderName) => {
@@ -55,7 +54,7 @@ const fetchModifiedDates = (deviceId, folderName) => {
     .then(dates => dates.reverse());
 };
 
-// helper
+// helper func
 // Fetch the data files for a date for the device
 // at /wxapp2/ecgdata/liveecg/:deviceId/:folderName
 // and parse the list of links
@@ -101,6 +100,6 @@ export const fetchFileNamesAndDates = (deviceId, folderName) => {
         });
       })
       .then(dataFilesList => dispatch(gotAllFileFolders(dataFilesList)))
-      .catch(error => dispatch(dataFileFolderFailure(error)))
+      .catch(() => dispatch(dataFileFolderFailure()))
   };
 };
