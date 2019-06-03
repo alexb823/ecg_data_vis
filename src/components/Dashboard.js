@@ -14,10 +14,10 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: '#f5f5f5',
     marginTop: theme.spacing(2),
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     height: 514,
     textAlign: 'left',
     color: theme.palette.text.primary,
@@ -26,7 +26,7 @@ const styles = theme => ({
     backgroundRepeat: 'repeat',
   },
   paperSide: {
-    height: 898,
+    height: 868,
     color: theme.palette.text.primary,
   },
   paperBottom: {
@@ -55,7 +55,7 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
         direction="row"
         justify="center"
         alignItems="flex-start"
-        spacing={3}
+        spacing={2}
       >
         <Grid item xs={12} md={3} align="center">
           <Paper className={classes.paperSide}>
@@ -80,8 +80,8 @@ const Dashboard = ({ classes, match, fetchAllDaysFolders }) => {
             direction="row"
             justify="center"
             alignItems="flex-start"
-            spacing={3}
-            style={{ marginTop: '20px' }}
+            spacing={2}
+            style={{ marginTop: '10px' }}
           >
             <Grid item xs={12} md={5} align="center">
               <Paper className={classes.paperBottom}>

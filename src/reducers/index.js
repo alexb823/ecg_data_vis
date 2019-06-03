@@ -6,7 +6,7 @@ import { dataFilesFolders } from './dataFilesReducer';
 import { ecgData } from './ecgDataReducer';
 import { rhythm } from './rhythmDataReducer';
 
-const RootReducer = combineReducers({
+const rootReducer = combineReducers({
   allDevices,
   allDaysFolders,
   dataFilesFolders,
@@ -14,4 +14,4 @@ const RootReducer = combineReducers({
   rhythm,
 });
 
-export default RootReducer;
+export default rootReducer;
