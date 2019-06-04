@@ -5,6 +5,7 @@ import { allDaysFolders } from './daysFoldersReducer';
 import { dataFilesFolders } from './dataFilesReducer';
 import { ecgData } from './ecgDataReducer';
 import { rhythm } from './rhythmDataReducer';
+import {highlightedEvent} from './highlightedEventReducer'
 
 const rootReducer = combineReducers({
   allDevices,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   dataFilesFolders,
   ecgData,
   rhythm,
+  highlightedEvent,
 });
 
 export default rootReducer;
