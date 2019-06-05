@@ -36,13 +36,34 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
     const lastXVal = ecgDataArr[ecgDataArr.length - 1].x;
     return { x: [firstXVal, lastXVal], y: [-3000, 4000] };
   };
+  
+  // Helper func to calculate starting and ending points of the visible data, for when a rhythm event is selected.
+  // Will help render the graph with the selected event label centered on the graph, or as close to center as possible
+  const calcStartAndEndVal = (eventUtc) => {
+    const [firstXVal, lastXVal] = getEntireDomain(ecgDataArr).x;
+    let startVal = firstXVal;
+    let endVal  = lastXVal;
+    if ((firstXVal < (eventUtc - 3000)) && lastXVal > (eventUtc + 3000)) {
+      startVal = (eventUtc - 3000);
+      endVal = startVal + 6000;
+    } else if (firstXVal >= (eventUtc - 3000)) {
+      endVal = startVal + 6000;
+    } else if (lastXVal <= (eventUtc + 3000)){
+      startVal = endVal - 6000;
+    }
+    return [startVal, endVal];
+  }
 
   useEffect(() => {
     if (ecgDataArr.length) {
       setEntireDomain(getEntireDomain(ecgDataArr));
+      if (highlightedEvent.eventUtc) {
+        setZoomXDomain(calcStartAndEndVal(highlightedEvent.eventUtc));
+      } else {
       setZoomXDomain([ecgDataArr[0].x, ecgDataArr[0].x + 6000]);
+      }
     }
-  }, [ecgDataArr]);
+  }, [ecgDataArr, highlightedEvent]);
 
   if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
