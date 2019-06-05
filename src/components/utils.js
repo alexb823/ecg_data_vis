@@ -34,6 +34,7 @@ export const mapRhythmData = rhythmData => {
       const ms = new Date(eventUtc).getMilliseconds();
       return {
         descriptionFull: event.DESCRIPTION_FULL._text.toLowerCase(),
+        descriptionShort: event.DESCRIPTION_SHORT._text,
         eventTime: event.EVENT_TIME._text,
         eventLocTime: calcLocalTime(eventUtc, ms),
         eventUtc,
@@ -50,6 +51,7 @@ export const mapRhythmData = rhythmData => {
     ).getMilliseconds();
     events.push({
       descriptionFull: rhythmData.EVENT.DESCRIPTION_FULL._text.toLowerCase(),
+      descriptionShort: rhythmData.EVENT.DESCRIPTION_SHORT._text,
       eventTime: rhythmData.EVENT.EVENT_TIME._text,
       eventLocTime: calcLocalTime(eventUtc, ms),
       eventUtc,

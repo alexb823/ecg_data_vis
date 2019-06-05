@@ -7,10 +7,12 @@ import {
   VictoryTheme,
   VictoryBrushContainer,
   VictoryAxis,
+  VictoryLabel,
 } from 'victory';
 import Spinner from './Spinner';
 
-const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
+
+const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
   //State
   const [zoomXDomain, setZoomXDomain] = useState([0, 6000]);
   const [entireDomain, setEntireDomain] = useState({});
@@ -85,10 +87,24 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
           />
 
           <VictoryLine
-            style={{ data: { stroke: 'tomato', strokeWidth: '2px' } }}
+            style={{ data: { stroke: 'black', strokeWidth: '2px' } }}
             interpolation="natural"
             data={getData()}
           />
+          { highlightedEvent.eventUtc &&
+          <VictoryLine
+            style={{
+              data: {stroke: 'tomato', strokeWidth: 1 },
+              // labels: { angle: 90, fill: 'tomato', fontSize: 12} //vertical option
+              labels: { angle: 0, fill: 'tomato', fontSize: 12} //horizontal option
+            }}
+            labels={[`${highlightedEvent.descriptionShort}`]}
+            // labelComponent={<VictoryLabel y={50} dy={-15} textAnchor="start"/>} //vertical option
+            labelComponent={<VictoryLabel y={50} dx={5} textAnchor="start" verticalAnchor="start"/>} //horizontal option
+            x={()=> highlightedEvent.eventUtc}
+          />
+            
+          }
         </VictoryChart>
 
         <VictoryChart
@@ -116,7 +132,7 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
           />
           <VictoryLine
             style={{
-              data: { stroke: 'tomato', strokeWidth: '1px' },
+              data: { stroke: 'black', strokeWidth: '1px' },
             }}
             interpolation="bundle"
             data={getData()}
@@ -127,8 +143,8 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
   }
 };
 
-const mapStateToProps = ({ ecgData: { status, ecgDataArr } }) => {
-  return { status, ecgDataArr };
+const mapStateToProps = ({ ecgData: { status, ecgDataArr }, highlightedEvent }) => {
+  return { status, ecgDataArr, highlightedEvent };
 };
 
 export default connect(mapStateToProps)(EcgGraph);
