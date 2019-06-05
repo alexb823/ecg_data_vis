@@ -13,10 +13,9 @@ const daysFoldersRequest = () => {
   };
 };
 
-const daysFoldersFailure = error => {
+const daysFoldersFailure = () => {
   return {
     type: DAYS_FOLDERS_FAILURE,
-    error,
   };
 };
 
@@ -36,7 +35,7 @@ export const allDaysFolders = (state = INITIAL_STATE, action) => {
     case DAYS_FOLDERS_REQUEST:
       return { status: 'fetching', daysFolderList: [] };
     case DAYS_FOLDERS_FAILURE:
-      return { status: 'failed', daysFolderList: action.error };
+      return { status: 'failed', daysFolderList: [] };
     case GOT_ALL_DAYS_FOLDERS:
       return { status: 'fetched', daysFolderList: action.daysFolderList };
     default:
@@ -46,7 +45,7 @@ export const allDaysFolders = (state = INITIAL_STATE, action) => {
 
 // // Thunks
 
-// helper
+// helper func
 // Fetch the folder modified GMT dates for the device at /wxapp2/ecgdata/liveecg/:deviceId
 // and parse the mod date as we filter for only unique date values
 const fetchModifiedDates = deviceId => {
@@ -56,7 +55,7 @@ const fetchModifiedDates = deviceId => {
     .then(dates => dates.reverse());
 };
 
-// helper
+// helper func
 // Fetch the list folder names (which is an 8 digit date strings)
 // for the device at /wxapp2/ecgdata/liveecg/:deviceId
 // and parse the list of links
@@ -88,6 +87,6 @@ export const fetchAllDaysFolders = deviceId => {
         })
       )
       .then(daysFolders => dispatch(gotAllDaysFolders(daysFolders)))
-      .catch(error => dispatch(daysFoldersFailure(error)));
+      .catch(() => dispatch(daysFoldersFailure()));
   };
 };

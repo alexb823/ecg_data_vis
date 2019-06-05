@@ -13,10 +13,9 @@ const devicesRequest = () => {
   };
 };
 
-const devicesFailure = error => {
+const devicesFailure = () => {
   return {
     type: DEVICES_FAILURE,
-    error,
   };
 };
 
@@ -36,7 +35,7 @@ export const allDevices = (state = INITIAL_STATE, action) => {
     case DEVICES_REQUEST:
       return { status: 'fetching', deviceList: [] };
     case DEVICES_FAILURE:
-      return { status: 'failed', deviceList: action.error };
+      return { status: 'failed', deviceList: [] };
     case GOT_ALL_DEVICES:
       return { status: 'fetched', deviceList: action.devices };
     default:
@@ -54,6 +53,6 @@ export const getAllDevices = () => {
       .then(response => parseListOfLinks(response.data))
       .then(devices => devices.reverse())
       .then(devices => dispatch(gotAllDevices(devices)))
-      .catch(error => dispatch(devicesFailure(error)));
+      .catch(() => dispatch(devicesFailure()));
   };
 };

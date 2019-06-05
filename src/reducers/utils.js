@@ -51,7 +51,19 @@ export const parseSmoothECG = str => {
     }, []);
 };
 
+// Reduce the number of sample points
+// Returns an array of averages based on sample rate
+// input ([1,2,3,4,5,6,7,8], 3) will return [2, 5, 8]
+export const resampleArray = (myArray, sampleRate) => {
+  const results = [];
 
+  while (myArray.length) {
+    const sample = myArray.splice(0, sampleRate);
+    const avg = sample.reduce((acc, num) => acc + num) / sample.length;
+    results.push(Math.round(avg));
+  }
+  return results;
+};
 
 // //Testing fetching rhythm and converting from xml to json
 // export const parseRhythm = (xml) => {
