@@ -10,9 +10,15 @@ import {
   VictoryLabel,
 } from 'victory';
 import Spinner from './Spinner';
+import { selectedAnEvent } from '../reducers/highlightedEventReducer';
 
-
-const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
+const EcgGraph = ({
+  deviceId,
+  status,
+  ecgDataArr,
+  highlightedEvent,
+  selectedAnEvent,
+}) => {
   //State
   const [zoomXDomain, setZoomXDomain] = useState([0, 6000]);
   const [brushXDomain, setBrushXDomain] = useState([0, 6000]);
@@ -20,30 +26,19 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
 
   // only keeping track of the X dimension
   const handleZoom = domain => {
+    setZoomXDomain(domain.x);
     setBrushXDomain(domain.x);
   };
-  
-   const handleBrush = domain => {
+
+  const handleBrush = domain => {
     setZoomXDomain(domain.x);
+    setBrushXDomain(domain.x);
   };
-  
-  // handleZoom(domain) {
-  //   this.setState({selectedDomain: domain});
-  // }
-  // handleBrush(domain) {
-  //   this.setState({zoomDomain: domain});
-  // }
 
   // Using zoomXDomain state to filter out all data that isn't currently visible
   const getData = () => {
     return ecgDataArr.filter(
       dataPt => dataPt.x >= zoomXDomain[0] && dataPt.x <= zoomXDomain[1]
-    );
-  };
-  
-  const getData2 = () => {
-    return ecgDataArr.filter(
-      dataPt => dataPt.x >= brushXDomain[0] && dataPt.x <= brushXDomain[1]
     );
   };
 
@@ -54,23 +49,23 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
     const lastXVal = ecgDataArr[ecgDataArr.length - 1].x;
     return { x: [firstXVal, lastXVal], y: [-3000, 4000] };
   };
-  
+
   // Helper func to calculate starting and ending points of the visible data, for when a rhythm event is selected.
   // Will help render the graph with the selected event label centered on the graph, or as close to center as possible
-  const calcStartAndEndVal = (eventUtc) => {
+  const calcStartAndEndVal = eventUtc => {
     const [firstXVal, lastXVal] = getEntireDomain(ecgDataArr).x;
     let startVal = firstXVal;
-    let endVal  = lastXVal;
-    if ((firstXVal < (eventUtc - 3000)) && lastXVal > (eventUtc + 3000)) {
-      startVal = (eventUtc - 3000);
+    let endVal = lastXVal;
+    if (firstXVal < eventUtc - 3000 && lastXVal > eventUtc + 3000) {
+      startVal = eventUtc - 3000;
       endVal = startVal + 6000;
-    } else if (firstXVal >= (eventUtc - 3000)) {
+    } else if (firstXVal >= eventUtc - 3000) {
       endVal = startVal + 6000;
-    } else if (lastXVal <= (eventUtc + 3000)){
+    } else {
       startVal = endVal - 6000;
     }
     return [startVal, endVal];
-  }
+  };
 
   useEffect(() => {
     if (ecgDataArr.length) {
@@ -79,8 +74,8 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
         setZoomXDomain(calcStartAndEndVal(highlightedEvent.eventUtc));
         setBrushXDomain(calcStartAndEndVal(highlightedEvent.eventUtc));
       } else {
-      setZoomXDomain([ecgDataArr[0].x, ecgDataArr[0].x + 6000]);
-      setBrushXDomain([ecgDataArr[0].x, ecgDataArr[0].x + 6000]);
+        setZoomXDomain([ecgDataArr[0].x, ecgDataArr[0].x + 6000]);
+        setBrushXDomain([ecgDataArr[0].x, ecgDataArr[0].x + 6000]);
       }
     }
   }, [ecgDataArr, highlightedEvent]);
@@ -104,7 +99,7 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
               allowZoom={false}
               zoomDimension="x"
               zoomDomain={{ x: zoomXDomain }}
-              onZoomDomainChange={handleZoom}
+              onZoomDomainChange={handleBrush}
             />
           }
         >
@@ -132,20 +127,21 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
             interpolation="natural"
             data={getData()}
           />
-          { highlightedEvent.eventUtc &&
-          <VictoryLine
-            style={{
-              data: {stroke: 'tomato', strokeWidth: 1 },
-              // labels: { angle: 90, fill: 'tomato', fontSize: 12} //vertical option
-              labels: { angle: 0, fill: 'tomato', fontSize: 12} //horizontal option
-            }}
-            labels={[`${highlightedEvent.descriptionShort}`]}
-            // labelComponent={<VictoryLabel y={50} dy={-15} textAnchor="start"/>} //vertical option
-            labelComponent={<VictoryLabel y={50} dx={5} textAnchor="start" verticalAnchor="start"/>} //horizontal option
-            x={()=> highlightedEvent.eventUtc}
-          />
-            
-          }
+          {highlightedEvent.eventUtc && (
+            <VictoryLine
+              style={{
+                data: { stroke: 'tomato', strokeWidth: 1 },
+                labels: { angle: 90, fill: 'tomato', fontSize: 12, fontWeight: 'bold' }, //vertical option
+                // labels: { angle: 0, fill: 'tomato', fontSize: 12} //horizontal option
+              }}
+              labels={[`${highlightedEvent.descriptionShort}`]}
+              labelComponent={
+                <VictoryLabel y={50} dy={-15} textAnchor="start" />
+              } //vertical option
+              // labelComponent={<VictoryLabel y={50} dx={5} textAnchor="start" verticalAnchor="start"/>} //horizontal option
+              x={() => highlightedEvent.eventUtc}
+            />
+          )}
         </VictoryChart>
 
         <VictoryChart
@@ -159,8 +155,8 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
             <VictoryBrushContainer
               responsive={false}
               brushDimension="x"
+              onBrushDomainChange={handleZoom}
               brushDomain={{ x: brushXDomain }}
-              onBrushDomainChange={handleBrush}
             />
           }
         >
@@ -176,7 +172,7 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
               data: { stroke: 'black', strokeWidth: '1px' },
             }}
             interpolation="bundle"
-            data={getData2()}
+            data={getData()}
           />
         </VictoryChart>
       </div>
@@ -184,8 +180,20 @@ const EcgGraph = ({ deviceId, status, ecgDataArr, highlightedEvent }) => {
   }
 };
 
-const mapStateToProps = ({ ecgData: { status, ecgDataArr }, highlightedEvent }) => {
+const mapStateToProps = ({
+  ecgData: { status, ecgDataArr },
+  highlightedEvent,
+}) => {
   return { status, ecgDataArr, highlightedEvent };
 };
 
-export default connect(mapStateToProps)(EcgGraph);
+const mapDispatchToProps = dispatch => {
+  return {
+    selectedAnEvent: rhythmEvent => dispatch(selectedAnEvent(rhythmEvent)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EcgGraph);
