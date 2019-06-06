@@ -146,8 +146,9 @@ const EcgGraph = ({
             <VictoryBrushContainer
               responsive={false}
               brushDimension="x"
-              onBrushDomainChange={handleZoom}
+              defaultBrushArea="disable"
               brushDomain={{ x: zoomXDomain }}
+              onBrushDomainChange={handleZoom}
             />
           }
         >
