@@ -24,11 +24,13 @@ const EcgGraph = ({
   const [entireDomain, setEntireDomain] = useState({});
 
   // only keeping track of the X dimension
-  const handleZoom = domain => {
-    setZoomXDomain(domain.x);
+  // Keeps the two line charts insync and vals used by getData filter updated
+  const handleZoom = zoomDomain => {
+    setZoomXDomain(zoomDomain.x);
   };
 
   // Using zoomXDomain state to filter out all data that isn't currently visible
+  // Returns an array of data points in the zoomXDomain range (curent range is 6sec)
   const getData = () => {
     return ecgDataArr.filter(
       dataPt => dataPt.x >= zoomXDomain[0] && dataPt.x <= zoomXDomain[1]
@@ -89,7 +91,7 @@ const EcgGraph = ({
               responsive={false}
               allowZoom={false}
               zoomDimension="x"
-              zoomDomain={{ x: zoomXDomain }}
+              zoomDomain={{ x: zoomXDomain }} //only passing in x, because y doesn't change
               onZoomDomainChange={handleZoom}
             />
           }
