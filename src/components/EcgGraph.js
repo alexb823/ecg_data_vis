@@ -117,7 +117,7 @@ const EcgGraph = ({
 
           <VictoryLine
             style={{ data: { stroke: 'black', strokeWidth: '2px' } }}
-            interpolation="natural"
+            interpolation="cardinal"
             data={getData()}
           />
           {highlightedEvent.eventUtc && (
