@@ -24,7 +24,7 @@ const EcgGraph = ({
   const [entireDomain, setEntireDomain] = useState({});
 
   // only keeping track of the X dimension
-  // Keeps the two line charts insync and vals used by getData filter updated
+  // Keeps the two line charts insync, and keeps vals used by getData filter updated
   const handleZoom = zoomDomain => {
     setZoomXDomain(zoomDomain.x);
   };
