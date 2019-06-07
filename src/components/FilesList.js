@@ -22,6 +22,7 @@ const styles = theme => ({
   },
 });
 
+
 const FilesList = ({
   classes,
   deviceId,

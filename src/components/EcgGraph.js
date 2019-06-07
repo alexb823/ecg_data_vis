@@ -7,20 +7,30 @@ import {
   VictoryTheme,
   VictoryBrushContainer,
   VictoryAxis,
+  VictoryLabel,
 } from 'victory';
 import Spinner from './Spinner';
+import { selectedAnEvent } from '../reducers/highlightedEventReducer';
 
-const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
+const EcgGraph = ({
+  deviceId,
+  status,
+  ecgDataArr,
+  highlightedEvent,
+  selectedAnEvent,
+}) => {
   //State
   const [zoomXDomain, setZoomXDomain] = useState([0, 6000]);
   const [entireDomain, setEntireDomain] = useState({});
 
   // only keeping track of the X dimension
-  const handleZoom = domain => {
-    setZoomXDomain(domain.x);
+  // Keeps the two line charts insync and vals used by getData filter updated
+  const handleZoom = zoomDomain => {
+    setZoomXDomain(zoomDomain.x);
   };
 
   // Using zoomXDomain state to filter out all data that isn't currently visible
+  // Returns an array of data points in the zoomXDomain range (curent range is 6sec)
   const getData = () => {
     return ecgDataArr.filter(
       dataPt => dataPt.x >= zoomXDomain[0] && dataPt.x <= zoomXDomain[1]
@@ -35,12 +45,33 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
     return { x: [firstXVal, lastXVal], y: [-3000, 4000] };
   };
 
+  // Helper func to calculate starting and ending points of the visible data, for when a rhythm event is selected.
+  // Will help render the graph with the selected event label centered on the graph, or as close to center as possible
+  const calcStartAndEndVal = eventUtc => {
+    const [firstXVal, lastXVal] = getEntireDomain(ecgDataArr).x;
+    let startVal = firstXVal;
+    let endVal = lastXVal;
+    if (firstXVal < eventUtc - 3000 && lastXVal > eventUtc + 3000) {
+      startVal = eventUtc - 3000;
+      endVal = startVal + 6000;
+    } else if (firstXVal >= eventUtc - 3000) {
+      endVal = startVal + 6000;
+    } else {
+      startVal = endVal - 6000;
+    }
+    return [startVal, endVal];
+  };
+
   useEffect(() => {
     if (ecgDataArr.length) {
       setEntireDomain(getEntireDomain(ecgDataArr));
-      setZoomXDomain([ecgDataArr[0].x, ecgDataArr[0].x + 6000]);
+      if (highlightedEvent.eventUtc) {
+        setZoomXDomain(calcStartAndEndVal(highlightedEvent.eventUtc));
+      } else {
+        setZoomXDomain([ecgDataArr[0].x, ecgDataArr[0].x + 6000]);
+      }
     }
-  }, [ecgDataArr]);
+  }, [ecgDataArr, highlightedEvent]);
 
   if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
@@ -60,7 +91,7 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
               responsive={false}
               allowZoom={false}
               zoomDimension="x"
-              zoomDomain={{ x: zoomXDomain }}
+              zoomDomain={{ x: zoomXDomain }} //only passing in x, because y doesn't change
               onZoomDomainChange={handleZoom}
             />
           }
@@ -85,10 +116,25 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
           />
 
           <VictoryLine
-            style={{ data: { stroke: 'tomato', strokeWidth: '2px' } }}
+            style={{ data: { stroke: 'black', strokeWidth: '2px' } }}
             interpolation="natural"
             data={getData()}
           />
+          {highlightedEvent.eventUtc && (
+            <VictoryLine
+              style={{
+                data: { stroke: 'tomato', strokeWidth: 1 },
+                labels: { angle: 90, fill: 'tomato', fontSize: 12, fontWeight: 'bold' }, //vertical option
+                // labels: { angle: 0, fill: 'tomato', fontSize: 12} //horizontal option
+              }}
+              labels={[`${highlightedEvent.descriptionShort}`]}
+              labelComponent={
+                <VictoryLabel y={50} dy={-15} textAnchor="start" />
+              } //vertical option
+              // labelComponent={<VictoryLabel y={50} dx={5} textAnchor="start" verticalAnchor="start"/>} //horizontal option
+              x={() => highlightedEvent.eventUtc}
+            />
+          )}
         </VictoryChart>
 
         <VictoryChart
@@ -102,6 +148,7 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
             <VictoryBrushContainer
               responsive={false}
               brushDimension="x"
+              defaultBrushArea="disable"
               brushDomain={{ x: zoomXDomain }}
               onBrushDomainChange={handleZoom}
             />
@@ -116,7 +163,7 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
           />
           <VictoryLine
             style={{
-              data: { stroke: 'tomato', strokeWidth: '1px' },
+              data: { stroke: 'black', strokeWidth: '1px' },
             }}
             interpolation="bundle"
             data={getData()}
@@ -127,8 +174,20 @@ const EcgGraph = ({ deviceId, status, ecgDataArr }) => {
   }
 };
 
-const mapStateToProps = ({ ecgData: { status, ecgDataArr } }) => {
-  return { status, ecgDataArr };
+const mapStateToProps = ({
+  ecgData: { status, ecgDataArr },
+  highlightedEvent,
+}) => {
+  return { status, ecgDataArr, highlightedEvent };
 };
 
-export default connect(mapStateToProps)(EcgGraph);
+const mapDispatchToProps = dispatch => {
+  return {
+    selectedAnEvent: rhythmEvent => dispatch(selectedAnEvent(rhythmEvent)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EcgGraph);
