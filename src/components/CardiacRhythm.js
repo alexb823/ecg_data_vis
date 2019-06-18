@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   List,
@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core/';
 import Spinner from './Spinner';
 import { mapRhythmData } from './utils';
+import {selectedAnEvent } from '../reducers/highlightedEventReducer';
+
 
 const styles = theme => ({
   root: {
@@ -23,18 +25,32 @@ const styles = theme => ({
   },
 });
 
-const CardiacRhythm = ({ classes, deviceId, status, rhythmList }) => {
-  useEffect(() => {}, [rhythmList]);
 
-  // console.log(rhythmList);
+const CardiacRhythm = ({ classes, deviceId, rhythm, status, rhythmEventList, selectedAnEvent }) => {
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  
+  useEffect(() => {
+    setSelectedIndex(-1);
+    selectedAnEvent({});
+  }, [rhythm]);
+  
+  const handleListItemClick = (index, rhythmEvent) => {
+    setSelectedIndex(index);
+    selectedAnEvent(rhythmEvent);
+  }
 
   if (status === 'fetching' || status === 'failed') {
     return <Spinner />;
   } else {
     return (
         <List className={classes.root}>
-          {rhythmList.map(rhythm => (
-            <ListItem key={rhythm.eventUtc + rhythm.descriptionFull}>
+          {rhythmEventList.map((rhythmEvent, index) => (
+            <ListItem
+            key={rhythmEvent.eventUtc + rhythmEvent.descriptionFull}
+            button
+            selected={selectedIndex === index}
+            onClick={() => handleListItemClick(index, rhythmEvent)}
+              >
               <ListItemText
                 disableTypography
                 primary={
@@ -42,7 +58,7 @@ const CardiacRhythm = ({ classes, deviceId, status, rhythmList }) => {
                     variant="subtitle1"
                     noWrap
                     className={classes.listText}
-                  >{`${rhythm.eventLocTime} - ${rhythm.descriptionFull}`}</Typography>
+                  >{`${rhythmEvent.eventLocTime} - ${rhythmEvent.descriptionFull}`}</Typography>
                 }
               />
             </ListItem>
@@ -52,12 +68,20 @@ const CardiacRhythm = ({ classes, deviceId, status, rhythmList }) => {
   }
 };
 
-const mapStateToProps = ({ rhythm: { status, rhythmData } }) => {
+
+const mapStateToProps = ({ rhythm }) => {
   return {
-    status,
-    rhythmList: mapRhythmData(rhythmData),
+    rhythm,
+    status: rhythm.status,
+    rhythmEventList: mapRhythmData(rhythm.rhythmData),
   };
 };
 
+const mapDispatchToProps = dispatch => {
+  return {
+    selectedAnEvent: (rhythmEvent) => dispatch(selectedAnEvent(rhythmEvent)),
+  }
+}
 
-export default connect(mapStateToProps)(withStyles(styles)(CardiacRhythm));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CardiacRhythm));
+

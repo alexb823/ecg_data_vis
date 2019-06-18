@@ -65,6 +65,7 @@ export const resampleArray = (myArray, sampleRate) => {
   return results;
 };
 
+
 // //Testing fetching rhythm and converting from xml to json
 // export const parseRhythm = (xml) => {
 //   axios.post('/api/xmlToJson', {xml})
