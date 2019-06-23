@@ -6,7 +6,7 @@ const proxy = require('http-proxy-middleware');
 const options = {
   target: 'https://paf3.ecordum.cn',
   auth: process.env.ECGDATA_AUTH,
-  secure: true,
+  secure: false,
 };
 
 const ecgDataProxy = proxy(options);
