@@ -24,11 +24,13 @@ const EcgGraph = ({
   const [entireDomain, setEntireDomain] = useState({});
 
   // only keeping track of the X dimension
-  const handleZoom = domain => {
-    setZoomXDomain(domain.x);
+  // Keeps the two line charts insync, and keeps vals used by getData filter updated
+  const handleZoom = zoomDomain => {
+    setZoomXDomain(zoomDomain.x);
   };
 
   // Using zoomXDomain state to filter out all data that isn't currently visible
+  // Returns an array of data points in the zoomXDomain range (curent range is 6sec)
   const getData = () => {
     return ecgDataArr.filter(
       dataPt => dataPt.x >= zoomXDomain[0] && dataPt.x <= zoomXDomain[1]
@@ -89,7 +91,7 @@ const EcgGraph = ({
               responsive={false}
               allowZoom={false}
               zoomDimension="x"
-              zoomDomain={{ x: zoomXDomain }}
+              zoomDomain={{ x: zoomXDomain }} //only passing in x, because y doesn't change
               onZoomDomainChange={handleZoom}
             />
           }
@@ -115,14 +117,19 @@ const EcgGraph = ({
 
           <VictoryLine
             style={{ data: { stroke: 'black', strokeWidth: '2px' } }}
-            interpolation="natural"
+            interpolation="cardinal"
             data={getData()}
           />
           {highlightedEvent.eventUtc && (
             <VictoryLine
               style={{
                 data: { stroke: 'tomato', strokeWidth: 1 },
-                labels: { angle: 90, fill: 'tomato', fontSize: 12, fontWeight: 'bold' }, //vertical option
+                labels: {
+                  angle: 90,
+                  fill: 'tomato',
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                }, //vertical option
                 // labels: { angle: 0, fill: 'tomato', fontSize: 12} //horizontal option
               }}
               labels={[`${highlightedEvent.descriptionShort}`]}
@@ -146,8 +153,9 @@ const EcgGraph = ({
             <VictoryBrushContainer
               responsive={false}
               brushDimension="x"
-              onBrushDomainChange={handleZoom}
+              defaultBrushArea="disable"
               brushDomain={{ x: zoomXDomain }}
+              onBrushDomainChange={handleZoom}
             />
           }
         >
