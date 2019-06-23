@@ -124,7 +124,12 @@ const EcgGraph = ({
             <VictoryLine
               style={{
                 data: { stroke: 'tomato', strokeWidth: 1 },
-                labels: { angle: 90, fill: 'tomato', fontSize: 12, fontWeight: 'bold' }, //vertical option
+                labels: {
+                  angle: 90,
+                  fill: 'tomato',
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                }, //vertical option
                 // labels: { angle: 0, fill: 'tomato', fontSize: 12} //horizontal option
               }}
               labels={[`${highlightedEvent.descriptionShort}`]}
